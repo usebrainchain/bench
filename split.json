@@ -1,0 +1,66 @@
+{
+  "seed": 617983144,
+  "rule": "per family, round(tasks / 3) tasks held out: Fisher-Yates over the sorted task names, mulberry32 seeded with FNV-1a of seed:family",
+  "families": {
+    "algorithms": {
+      "tasks": 6,
+      "heldOut": 2
+    },
+    "contacts": {
+      "tasks": 3,
+      "heldOut": 1
+    },
+    "datetime": {
+      "tasks": 6,
+      "heldOut": 2
+    },
+    "events": {
+      "tasks": 3,
+      "heldOut": 1
+    },
+    "formats": {
+      "tasks": 6,
+      "heldOut": 2
+    },
+    "invoices": {
+      "tasks": 3,
+      "heldOut": 1
+    },
+    "money": {
+      "tasks": 6,
+      "heldOut": 2
+    },
+    "numeric": {
+      "tasks": 6,
+      "heldOut": 2
+    },
+    "orders": {
+      "tasks": 3,
+      "heldOut": 1
+    },
+    "shipments": {
+      "tasks": 3,
+      "heldOut": 1
+    },
+    "state-machines": {
+      "tasks": 6,
+      "heldOut": 2
+    },
+    "strings": {
+      "tasks": 6,
+      "heldOut": 2
+    },
+    "structures": {
+      "tasks": 6,
+      "heldOut": 2
+    },
+    "text": {
+      "tasks": 6,
+      "heldOut": 2
+    },
+    "validation": {
+      "tasks": 6,
+      "heldOut": 2
+    }
+  }
+}
