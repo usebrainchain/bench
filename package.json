@@ -1,0 +1,15 @@
+{
+  "name": "brainchain-bench",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Labelled deliveries and oracles for measuring BrainChain's judge",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "check": "node check.mjs",
+    "plan": "node plan.mjs"
+  }
+}
