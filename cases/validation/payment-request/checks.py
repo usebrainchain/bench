@@ -1,0 +1,10 @@
+good = {"amount": 1250, "currency": "EUR", "idempotency_key": "order-2026-11-14-0001"}
+assert validate_payment(good) == []
+assert validate_payment({**good, "metadata": {"order": "A-17"}}) == []
+assert validate_payment({}) == ["amount_missing", "currency_missing", "key_missing"]
+assert validate_payment({**good, "amount": 0}) == ["amount_range"]
+assert validate_payment({**good, "amount": "1250"}) == ["amount_type"]
+assert validate_payment({**good, "currency": "eur"}) == ["currency_unknown"]
+assert validate_payment({**good, "idempotency_key": "short"}) == ["key_format"]
+assert validate_payment({**good, "note": "x"}) == ["unknown_field"]
+assert validate_payment({**good, "metadata": {str(i): "v" for i in range(11)}}) == ["metadata_size"]

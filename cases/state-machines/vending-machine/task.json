@@ -1,0 +1,42 @@
+{
+  "family": "state-machines",
+  "kind": "code",
+  "language": "javascript",
+  "title": "Run a coin-operated vending machine with a credit limit and change",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "state-machines-vending-machine-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "It accepts exactly the four coins up to a 500 credit, handles unknown and insufficient selections, and pays greedy change largest coin first as the brief specifies."
+    },
+    {
+      "id": "state-machines-vending-machine-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "bug",
+      "checksOutcome": "failed",
+      "rationale": "It makes change only from 25, 10 and 5, so 200 cents of credit for a 75-cent item returns five 25-cent coins instead of [100, 25]."
+    },
+    {
+      "id": "state-machines-vending-machine-c",
+      "result": "c.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Per-event handlers apply every rule in the brief, including the 500 limit, own-key product lookup and fewest-coin change listed largest first."
+    },
+    {
+      "id": "state-machines-vending-machine-d",
+      "result": "d.md",
+      "expected": "reject",
+      "flaw": "false-log",
+      "checksOutcome": "passed",
+      "rationale": "It never applies the 500-cent limit, so six 100-cent coins leave a credit of 600 instead of returning the sixth coin, while the pasted log claims that test passed."
+    }
+  ]
+}

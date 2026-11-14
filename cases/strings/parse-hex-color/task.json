@@ -1,0 +1,42 @@
+{
+  "family": "strings",
+  "kind": "code",
+  "language": "javascript",
+  "title": "Parse a CSS hex colour into red, green, blue and alpha",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "strings-parse-hex-color-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "An anchored case-insensitive pattern admits exactly the four forms, short digits are doubled and alpha uses the brief's formula."
+    },
+    {
+      "id": "strings-parse-hex-color-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "off-task",
+      "checksOutcome": "failed",
+      "rationale": "It delivers toHexColor, which formats channel values as a hex string, instead of the parseHexColor parser the brief asks for."
+    },
+    {
+      "id": "strings-parse-hex-color-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "bug",
+      "checksOutcome": "failed",
+      "rationale": "It shifts each short-form digit left by four bits instead of repeating it, so \"#f80\" gives r 240 and g 128 instead of 255 and 136."
+    },
+    {
+      "id": "strings-parse-hex-color-d",
+      "result": "d.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "A lookup table validates every digit, short digits expand as 17 times their value and the result has exactly the four keys with the specified alpha."
+    }
+  ]
+}

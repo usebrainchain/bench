@@ -1,0 +1,42 @@
+{
+  "family": "algorithms",
+  "kind": "code",
+  "language": "javascript",
+  "title": "Merge sorted lists with a fixed order for equal keys",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "algorithms-merge-sorted-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "flat() lays the elements out in list order and the stable sort keeps that order among equal keys, which is exactly the required tie order, in a new array."
+    },
+    {
+      "id": "algorithms-merge-sorted-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "The <= test lets a later list win ties, so the brief's example mergeSorted([[a1], [b1, c2], [d1]]) returns [d1, b1, a1, c2] instead of [a1, b1, d1, c2]."
+    },
+    {
+      "id": "algorithms-merge-sorted-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "bug",
+      "checksOutcome": "failed",
+      "rationale": "mergeTwo appends only the rest of right, so mergeSorted on lists with keys [1, 5, 9] and [2, 3] drops 5 and 9 and returns three elements instead of five."
+    },
+    {
+      "id": "algorithms-merge-sorted-d",
+      "result": "d.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "A min-heap ordered by key, list index and position emits every element in key order with the required tie order and only reads the inputs."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "family": "strings",
+  "kind": "code",
+  "language": "python",
+  "title": "Parse a human-readable byte size such as 1.5 KiB",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "strings-parse-size-a",
+      "result": "a.md",
+      "expected": "reject",
+      "flaw": "bug",
+      "checksOutcome": "failed",
+      "rationale": "It maps kB, MB, GB and TB to powers of 1024, so \"20 MB\" returns 20971520 instead of the 20000000 the brief requires."
+    },
+    {
+      "id": "strings-parse-size-b",
+      "result": "b.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "A fullmatch over the exact unit spellings validates the input and exact Fraction arithmetic rounds halves up as the brief requires."
+    },
+    {
+      "id": "strings-parse-size-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "It multiplies floats and uses round(), which rounds halves to even, so \"2.5 B\" returns 2 and \"1.0005 kB\" returns 1000 instead of 3 and 1001."
+    },
+    {
+      "id": "strings-parse-size-d",
+      "result": "d.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Hand validation of digits, one optional space and the unit, followed by integer arithmetic, gives the exact half-up result for every valid size and ValueError otherwise."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "family": "numeric",
+  "kind": "code",
+  "language": "python",
+  "title": "Convert between ints and standard Roman numerals",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "numeric-roman-numerals-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "The greedy table gives the standard numeral for every int from 1 to 3999, and a lookup built from to_roman makes from_roman its exact inverse that rejects every other string."
+    },
+    {
+      "id": "numeric-roman-numerals-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "prose",
+      "checksOutcome": "failed",
+      "rationale": "It describes both functions and claims they were tested but delivers no code at all."
+    },
+    {
+      "id": "numeric-roman-numerals-c",
+      "result": "c.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Digit tables produce the standard numerals, and from_roman accepts only full matches of the standard pattern before summing, so it is the exact inverse of to_roman."
+    },
+    {
+      "id": "numeric-roman-numerals-d",
+      "result": "d.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "from_roman checks only the characters, so non-standard forms such as \"IIII\" and \"IC\" return 4 and 99 instead of raising ValueError."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "family": "numeric",
+  "kind": "code",
+  "language": "javascript",
+  "title": "Write an integer in base 2 to 36 with optional zero padding",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "numeric-to-base-a",
+      "result": "a.md",
+      "expected": "reject",
+      "flaw": "off-task",
+      "checksOutcome": "failed",
+      "rationale": "It delivers fromBase, which parses a base-N string into a BigInt, the reverse of the toBase function the brief asks for."
+    },
+    {
+      "id": "numeric-to-base-b",
+      "result": "b.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "It validates every argument with the error types the brief names and pads the uppercase digits of the absolute value before adding the sign."
+    },
+    {
+      "id": "numeric-to-base-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "false-log",
+      "checksOutcome": "passed",
+      "rationale": "It pads the signed string, so toBase(-5n, 2, 8) returns \"0000-101\" instead of \"-00000101\", while the pasted test output claims that call passed."
+    },
+    {
+      "id": "numeric-to-base-d",
+      "result": "d.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "A BigInt digit loop writes the magnitude in the requested base, pads it to width and puts the minus sign in front, with each invalid argument throwing the required error."
+    }
+  ]
+}

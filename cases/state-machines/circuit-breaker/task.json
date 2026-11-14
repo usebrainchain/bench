@@ -1,0 +1,45 @@
+{
+  "family": "state-machines",
+  "kind": "code",
+  "language": "python",
+  "title": "Drive a circuit breaker with backoff and a half-open probe",
+  "levels": [
+    "Meets every requirement in the brief",
+    "Misses at least one requirement in the brief"
+  ],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "state-machines-circuit-breaker-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Per-state handlers follow the table exactly, and every path into the open state restarts the two-tick wait, including a failed probe."
+    },
+    {
+      "id": "state-machines-circuit-breaker-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "bug",
+      "checksOutcome": "failed",
+      "rationale": "An ok while closed does not reset the failure count, so plan_retries([\"fail\", \"ok\", \"fail\", \"fail\"]) trips on the last event instead of returning (\"closed\", [\"retry 100\", \"pass\", \"retry 100\", \"retry 200\"])."
+    },
+    {
+      "id": "state-machines-circuit-breaker-c",
+      "result": "c.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "A compact loop produces the specified action for every state and event, trips on the third consecutive failure and resets the wait on every trip."
+    },
+    {
+      "id": "state-machines-circuit-breaker-d",
+      "result": "d.md",
+      "expected": "reject",
+      "flaw": "false-log",
+      "checksOutcome": "passed",
+      "rationale": "A failed probe reopens the breaker without restarting the wait, so the brief's failed-probe example ends with \"probe\", \"idle\" instead of \"wait\", \"probe\", while the pasted log claims test_failed_probe_restarts_wait passed."
+    }
+  ]
+}

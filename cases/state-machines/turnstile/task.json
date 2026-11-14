@@ -1,0 +1,42 @@
+{
+  "family": "state-machines",
+  "kind": "code",
+  "language": "python",
+  "title": "Simulate a coin-operated turnstile that raises an alarm after three failed pushes",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "state-machines-turnstile-a",
+      "result": "a.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "A coin never clears the failure count, so turnstile([\"push\", \"push\", \"coin\", \"push\", \"push\"]) ends in alarm with a final \"alarm\" output instead of (\"locked\", [..., \"deny\"]) as the brief's example requires."
+    },
+    {
+      "id": "state-machines-turnstile-b",
+      "result": "b.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "One method per event implements every row of the table, clears the count on a paid unlock and on reset, and raises ValueError for unknown events."
+    },
+    {
+      "id": "state-machines-turnstile-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "wrong-language",
+      "checksOutcome": "failed",
+      "rationale": "It is delivered in JavaScript, returning an array and throwing RangeError, while the brief asks for a Python function, so there is no Python turnstile to run."
+    },
+    {
+      "id": "state-machines-turnstile-d",
+      "result": "d.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "A transition table with the failure count handled around it gives every specified output, alarms on the third failed push since the last coin or reset, and rejects unknown events with ValueError."
+    }
+  ]
+}

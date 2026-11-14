@@ -1,0 +1,42 @@
+{
+  "family": "money",
+  "kind": "code",
+  "language": "python",
+  "title": "Split an amount in cents by integer ratios with the largest remainder method",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "money-allocate-cents-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Integer quotients and remainders over one denominator, sorted by descending remainder then index, give the exact largest remainder split with ties to the lower index."
+    },
+    {
+      "id": "money-allocate-cents-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "Sorting by (remainder, index) in reverse gives tied cents to the higher index, so allocate(100, [1, 1, 1]) returns [33, 33, 34] instead of [34, 33, 33]."
+    },
+    {
+      "id": "money-allocate-cents-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "bug",
+      "checksOutcome": "failed",
+      "rationale": "It hands leftover cents out by index instead of by largest remainder, so allocate(100, [1, 2]) returns [34, 66] instead of [33, 67]."
+    },
+    {
+      "id": "money-allocate-cents-d",
+      "result": "d.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Exact fractions and a stable descending sort hand out the leftover cents by largest remainder with ties to the lower index, and invalid inputs raise ValueError."
+    }
+  ]
+}

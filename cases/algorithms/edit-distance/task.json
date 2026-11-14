@@ -1,0 +1,42 @@
+{
+  "family": "algorithms",
+  "kind": "code",
+  "language": "python",
+  "title": "Compute an edit distance with asymmetric operation costs",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "algorithms-edit-distance-a",
+      "result": "a.md",
+      "expected": "reject",
+      "flaw": "off-task",
+      "checksOutcome": "failed",
+      "rationale": "It computes the standard Levenshtein distance with every operation costing 1, so edit_distance(\"abc\", \"ab\") returns 1 and edit_distance(\"kitten\", \"sitting\") returns 3 instead of 2 and 5."
+    },
+    {
+      "id": "algorithms-edit-distance-b",
+      "result": "b.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "A full dynamic-programming table charges deletions 2, insertions 1 and replacements 2 in the right directions and compares characters exactly."
+    },
+    {
+      "id": "algorithms-edit-distance-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "false-log",
+      "checksOutcome": "passed",
+      "rationale": "It casefolds both strings first, so edit_distance(\"Apple\", \"apple\") returns 0 instead of 2, while the pasted pytest log claims test_case_matters_apple passed."
+    },
+    {
+      "id": "algorithms-edit-distance-d",
+      "result": "d.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "A single in-place row with a carried diagonal applies the brief's three costs in the right directions and compares characters exactly."
+    }
+  ]
+}

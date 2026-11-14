@@ -1,0 +1,6 @@
+assert title_case("the lord of the rings") == "The Lord of the Rings"
+assert title_case("A TALE OF TWO CITIES") == "A Tale of Two Cities"
+assert title_case("of mice and men") == "Of Mice and Men"
+assert title_case("  war   and peace ") == "War and Peace"
+assert title_case("gone with the wind") == "Gone With the Wind"
+assert title_case("") == ""

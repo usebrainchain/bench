@@ -1,0 +1,42 @@
+{
+  "family": "money",
+  "kind": "code",
+  "language": "javascript",
+  "title": "Total an invoice with tax rounded per line",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "money-invoice-total-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "It validates every input, rounds each line's tax half up in exact integer arithmetic before summing, and returns a new object with the three totals."
+    },
+    {
+      "id": "money-invoice-total-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "off-task",
+      "checksOutcome": "failed",
+      "rationale": "It treats unit prices as tax-inclusive and extracts the tax, so 2 units at 1250 cents and 2000 basis points give a subtotal of 2083 and tax of 417 instead of 2500 and 500."
+    },
+    {
+      "id": "money-invoice-total-c",
+      "result": "c.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Each line's tax is rounded half up on its own before the sums are taken, validation covers every field, and the lines are only read."
+    },
+    {
+      "id": "money-invoice-total-d",
+      "result": "d.md",
+      "expected": "reject",
+      "flaw": "false-log",
+      "checksOutcome": "passed",
+      "rationale": "It rounds the tax once on the subtotal, so two 5 cent lines at 1000 basis points get a tax of 1 instead of 2, while the pasted log claims exactly that test passed."
+    }
+  ]
+}

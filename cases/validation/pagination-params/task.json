@@ -1,0 +1,42 @@
+{
+  "family": "validation",
+  "kind": "code",
+  "language": "javascript",
+  "title": "Validate pagination query parameters",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "validation-pagination-params-a",
+      "result": "a.md",
+      "expected": "reject",
+      "flaw": "bug",
+      "checksOutcome": "failed",
+      "rationale": "parseInt reads a numeric prefix, so { limit: \"20abc\" } returns ok with limit 20 instead of limit_format, and \"020\", \"1.5\" and \"+5\" are accepted the same way."
+    },
+    {
+      "id": "validation-pagination-params-b",
+      "result": "b.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "A canonical-number pattern separates format from range errors, the defaults and null fields match the brief, and the codes come back sorted and unique."
+    },
+    {
+      "id": "validation-pagination-params-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "false-log",
+      "checksOutcome": "passed",
+      "rationale": "The range check uses >= max, so { limit: \"100\" } returns limit_range and { offset: \"10000\" } returns offset_range, while the pasted test log claims both boundaries are accepted."
+    },
+    {
+      "id": "validation-pagination-params-d",
+      "result": "d.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "A single pass over the keys checks each parameter exactly as specified, reports unknown keys once and adds the conflict code whenever cursor and offset are both present."
+    }
+  ]
+}

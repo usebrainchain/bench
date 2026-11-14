@@ -1,0 +1,42 @@
+{
+  "family": "formats",
+  "kind": "code",
+  "language": "javascript",
+  "title": "Parse a URL query string into ordered pairs",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "formats-query-string-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "It strips one leading \"?\", skips empty segments, splits at the first \"=\" and decodes \"+\" before percent escapes, with URIError coming from decodeURIComponent as the brief requires."
+    },
+    {
+      "id": "formats-query-string-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "false-log",
+      "checksOutcome": "passed",
+      "rationale": "Destructuring segment.split(\"=\") drops everything after a second \"=\", so \"a=b=c\" gives [\"a\", \"b\"] instead of [\"a\", \"b=c\"], while the pasted test run claims that case passed."
+    },
+    {
+      "id": "formats-query-string-c",
+      "result": "c.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Cutting each non-empty segment at its first \"=\" and decoding with \"+\" replaced first produces exactly the pairs and errors the brief specifies."
+    },
+    {
+      "id": "formats-query-string-d",
+      "result": "d.md",
+      "expected": "reject",
+      "flaw": "bug",
+      "checksOutcome": "failed",
+      "rationale": "It replaces \"+\" after percent-decoding, so \"plus=%2B1\" gives [\"plus\", \" 1\"] instead of [\"plus\", \"+1\"]."
+    }
+  ]
+}

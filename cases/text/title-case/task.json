@@ -1,0 +1,42 @@
+{
+  "family": "text",
+  "kind": "code",
+  "language": "python",
+  "title": "Convert a title to title case with lowercase small words",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "text-title-case-a",
+      "result": "a.md",
+      "expected": "reject",
+      "flaw": "wrong-language",
+      "checksOutcome": "failed",
+      "rationale": "It is a JavaScript function named titleCase, so there is no Python title_case function as the brief requires."
+    },
+    {
+      "id": "text-title-case-b",
+      "result": "b.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "It lowercases small words only strictly between the first and last word and capitalises every other word, with single spaces and TypeError for non-strings."
+    },
+    {
+      "id": "text-title-case-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "It never capitalises a small last word, so title_case(\"something to believe in\") returns \"Something to Believe in\" instead of \"Something to Believe In\"."
+    },
+    {
+      "id": "text-title-case-d",
+      "result": "d.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "It drops empty pieces between spaces, keeps small words lowercase except at index 0 and the last index, and capitalises everything else as the brief requires."
+    }
+  ]
+}

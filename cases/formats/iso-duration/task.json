@@ -1,0 +1,42 @@
+{
+  "family": "formats",
+  "kind": "code",
+  "language": "python",
+  "title": "Convert an ISO 8601 day-time duration to milliseconds",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "formats-iso-duration-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Scanning the date and time sections separately enforces the part order, the seconds-only fraction and every refusal in the brief, and returns exact integer milliseconds."
+    },
+    {
+      "id": "formats-iso-duration-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "bug",
+      "checksOutcome": "failed",
+      "rationale": "It adds the fraction digits as milliseconds without padding them, so \"PT1.5S\" returns 1005 instead of 1500."
+    },
+    {
+      "id": "formats-iso-duration-c",
+      "result": "c.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "An ASCII-only fullmatch plus explicit refusals of an empty P, an empty PT and a dangling T accepts exactly the specified grammar and pads fractions to milliseconds."
+    },
+    {
+      "id": "formats-iso-duration-d",
+      "result": "d.md",
+      "expected": "reject",
+      "flaw": "prose",
+      "checksOutcome": "failed",
+      "rationale": "It describes an implementation and claims it was tested, but delivers no Python code at all."
+    }
+  ]
+}

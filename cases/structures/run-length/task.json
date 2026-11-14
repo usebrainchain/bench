@@ -1,0 +1,42 @@
+{
+  "family": "structures",
+  "kind": "code",
+  "language": "javascript",
+  "title": "Group consecutive equal elements into value and count pairs",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "structures-run-length-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "It extends the current run when === holds or both elements are NaN, keeping the run's first element and counting into a new array."
+    },
+    {
+      "id": "structures-run-length-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "false-log",
+      "checksOutcome": "passed",
+      "rationale": "It compares JSON.stringify output, so runs([{}, {}]) returns one run of 2 instead of two runs and NaN joins a run of null, while the pasted log claims objects compare by identity."
+    },
+    {
+      "id": "structures-run-length-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "It compares with === alone, so runs([NaN, NaN, 1]) returns [[NaN, 1], [NaN, 1], [1, 1]] instead of [[NaN, 2], [1, 1]]."
+    },
+    {
+      "id": "structures-run-length-d",
+      "result": "d.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Array.prototype.includes compares with SameValueZero, which is the brief's equality, so runs, values and counts all come out as required."
+    }
+  ]
+}

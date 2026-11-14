@@ -1,0 +1,42 @@
+{
+  "family": "text",
+  "kind": "code",
+  "language": "javascript",
+  "title": "Truncate text on a word boundary with an ellipsis",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "text-truncate-words-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Scanning spaces from the end returns the longest trimmed prefix of at most limit - 3 characters, falls back to the hard cut, and throws the required errors."
+    },
+    {
+      "id": "text-truncate-words-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "prose",
+      "checksOutcome": "failed",
+      "rationale": "It describes truncate in prose and contains no JavaScript code, so there is no function to run."
+    },
+    {
+      "id": "text-truncate-words-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "It only looks for a space inside the first limit - 3 characters, so truncate(\"The quick brown fox\", 12) returns \"The...\" instead of \"The quick...\" when the prefix uses all limit - 3 characters."
+    },
+    {
+      "id": "text-truncate-words-d",
+      "result": "d.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "A single forward pass records the trimmed prefix length at every space that still fits, which yields the largest valid cut, and the hard cut applies only to an over-long first word."
+    }
+  ]
+}

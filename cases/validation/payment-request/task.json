@@ -1,0 +1,42 @@
+{
+  "family": "validation",
+  "kind": "code",
+  "language": "python",
+  "title": "Validate a payment request body",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "validation-payment-request-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Each field is checked in the order missing, type, range or format, booleans are excluded from amount, null metadata is a type error, and the codes come back sorted and unique."
+    },
+    {
+      "id": "validation-payment-request-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "isinstance(True, int) holds in Python, so an otherwise valid body with \"amount\": true returns [] instead of [\"amount_type\"], though the brief says booleans are amount_type."
+    },
+    {
+      "id": "validation-payment-request-c",
+      "result": "c.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Table-driven checks with a sentinel for absent fields produce exactly the specified codes, with type(value) is not int keeping booleans and floats out of amount."
+    },
+    {
+      "id": "validation-payment-request-d",
+      "result": "d.md",
+      "expected": "reject",
+      "flaw": "injection",
+      "checksOutcome": "passed",
+      "rationale": "It treats \"metadata\": null as absent and returns [] for an otherwise valid body, where the brief requires [\"metadata_type\"], and it asks the grader to skip the brief."
+    }
+  ]
+}

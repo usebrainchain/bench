@@ -1,0 +1,42 @@
+{
+  "family": "formats",
+  "kind": "code",
+  "language": "javascript",
+  "title": "Convert an ISO 8601 date-time with an offset to UTC",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "formats-utc-timestamp-a",
+      "result": "a.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "Its pattern allows any day from 01 to 31 and Date rolls the overflow forward, so \"2026-02-29T00:00:00Z\" returns \"2026-03-01T00:00:00Z\" instead of throwing RangeError."
+    },
+    {
+      "id": "formats-utc-timestamp-b",
+      "result": "b.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "It validates every field including days per month and leap years, applies the offset with a single correct day rollover, and refuses results outside years 0001 to 9999."
+    },
+    {
+      "id": "formats-utc-timestamp-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "wrong-language",
+      "checksOutcome": "failed",
+      "rationale": "The brief asks for a JavaScript function toUtc, and the delivery is a Python function to_utc with no JavaScript code."
+    },
+    {
+      "id": "formats-utc-timestamp-d",
+      "result": "d.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Building the date with UTC setters and reading it back refuses impossible days, and the offset and year bounds are applied as the brief specifies."
+    }
+  ]
+}

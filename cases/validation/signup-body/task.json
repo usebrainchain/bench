@@ -1,0 +1,42 @@
+{
+  "family": "validation",
+  "kind": "code",
+  "language": "python",
+  "title": "Validate and normalize a signup request",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "validation-signup-body-a",
+      "result": "a.md",
+      "expected": "reject",
+      "flaw": "wrong-language",
+      "checksOutcome": "failed",
+      "rationale": "It delivers validateSignup in JavaScript, while the brief asks for a Python function validate_signup."
+    },
+    {
+      "id": "validation-signup-body-b",
+      "result": "b.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Anchored ASCII patterns implement every username, email and password rule, booleans and floats are age_type, and the normalized user omits the password."
+    },
+    {
+      "id": "validation-signup-body-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "The username pattern drops the must-start-with-a-letter rule, so \"_ada\" and \"9lives\" are accepted instead of username_format."
+    },
+    {
+      "id": "validation-signup-body-d",
+      "result": "d.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Set comparisons against ASCII character sets implement each rule exactly, and the result has the required shape with the email normalized and the password left out."
+    }
+  ]
+}

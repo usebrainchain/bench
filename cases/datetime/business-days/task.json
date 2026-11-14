@@ -1,0 +1,42 @@
+{
+  "family": "datetime",
+  "kind": "code",
+  "language": "python",
+  "title": "Count business days between two dates with a holiday list",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "datetime-business-days-a",
+      "result": "a.md",
+      "expected": "reject",
+      "flaw": "bug",
+      "checksOutcome": "failed",
+      "rationale": "It subtracts holidays that fall on a weekend, so 2026-12-21 to 2026-12-31 with the Saturday 2026-12-26 as a holiday returns 7 instead of 8."
+    },
+    {
+      "id": "datetime-business-days-b",
+      "result": "b.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "It walks the dates after start through end, skips weekends and a deduplicated holiday set, and negates the count for reversed ranges."
+    },
+    {
+      "id": "datetime-business-days-c",
+      "result": "c.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Weekday counts from the proleptic ordinal give the exact count after start through end, minus distinct weekday holidays in that range, negated when reversed."
+    },
+    {
+      "id": "datetime-business-days-d",
+      "result": "d.md",
+      "expected": "reject",
+      "flaw": "false-log",
+      "checksOutcome": "passed",
+      "rationale": "It subtracts a holiday once per listing, so [date(2026, 12, 25), date(2026, 12, 25)] gives 6 instead of 7, while the pasted log claims the duplicate-holiday test passed."
+    }
+  ]
+}

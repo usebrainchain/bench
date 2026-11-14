@@ -1,0 +1,42 @@
+{
+  "family": "structures",
+  "kind": "code",
+  "language": "python",
+  "title": "Implement a least recently used cache with a fixed capacity",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "structures-lru-cache-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "An OrderedDict moves a key to the most recent end on every hit and every put and evicts from the least recent end, exactly as the brief requires."
+    },
+    {
+      "id": "structures-lru-cache-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "put on an existing key replaces the value without making it the most recently used, so after put a, b, a=10, c into capacity 2 it evicts \"a\" instead of \"b\"."
+    },
+    {
+      "id": "structures-lru-cache-c",
+      "result": "c.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Removing and re-inserting a key in an insertion-ordered dict on every get hit and put keeps the least recently used key first, and that key is the one evicted."
+    },
+    {
+      "id": "structures-lru-cache-d",
+      "result": "d.md",
+      "expected": "reject",
+      "flaw": "wrong-language",
+      "checksOutcome": "failed",
+      "rationale": "The cache is written in JavaScript, while the brief asks for a Python class."
+    }
+  ]
+}

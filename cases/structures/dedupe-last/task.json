@@ -1,0 +1,42 @@
+{
+  "family": "structures",
+  "kind": "code",
+  "language": "python",
+  "title": "Remove duplicates by key, keeping the last item for each key",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "structures-dedupe-last-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "It records the last index of each key and keeps exactly those positions, so the last item per key survives in its original order in a new list."
+    },
+    {
+      "id": "structures-dedupe-last-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "false-log",
+      "checksOutcome": "failed",
+      "rationale": "A dict keeps each key at its first insertion position, so [\"a1\", \"b1\", \"a2\"] returns [\"a2\", \"b1\"] instead of [\"b1\", \"a2\"], while the pasted log claims the order test passed."
+    },
+    {
+      "id": "structures-dedupe-last-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "off-task",
+      "checksOutcome": "failed",
+      "rationale": "It removes only adjacent duplicates, like uniq, so [\"a1\", \"b1\", \"a2\"] keyed by first letter returns all three items instead of [\"b1\", \"a2\"]."
+    },
+    {
+      "id": "structures-dedupe-last-d",
+      "result": "d.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "A reverse scan keeps the first sighting of each key, which is its last occurrence, and reversing the kept items restores the original order."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "family": "text",
+  "kind": "code",
+  "language": "python",
+  "title": "Convert a camelCase identifier to snake_case",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "text-camel-to-snake-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "It validates ASCII letters and digits, breaks before a capital that follows a lowercase letter or digit or ends an acronym before a lowercase letter, and lowercases the result."
+    },
+    {
+      "id": "text-camel-to-snake-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "off-task",
+      "checksOutcome": "failed",
+      "rationale": "It converts snake_case to camelCase in a function named snake_to_camel, the reverse of the requested to_snake conversion."
+    },
+    {
+      "id": "text-camel-to-snake-c",
+      "result": "c.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Two substitutions split an acronym from a following word and split a lowercase letter or digit from the next capital, which gives every word break the brief specifies."
+    },
+    {
+      "id": "text-camel-to-snake-d",
+      "result": "d.md",
+      "expected": "reject",
+      "flaw": "false-log",
+      "checksOutcome": "passed",
+      "rationale": "It never breaks after a digit, so to_snake(\"utf8Decode\") returns \"utf8decode\" instead of \"utf8_decode\", although the pasted log claims that exact case passed."
+    }
+  ]
+}

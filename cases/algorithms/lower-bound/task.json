@@ -1,0 +1,42 @@
+{
+  "family": "algorithms",
+  "kind": "code",
+  "language": "python",
+  "title": "Find the leftmost insertion index in a sorted list",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "algorithms-lower-bound-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "bisect_left returns the first index whose element is at least target, len(items) when there is none and 0 for an empty list, without modifying items."
+    },
+    {
+      "id": "algorithms-lower-bound-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "The shortcut reads items[-1] before checking for an empty list, so lower_bound([], 7) raises IndexError instead of returning 0."
+    },
+    {
+      "id": "algorithms-lower-bound-c",
+      "result": "c.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "A half-open binary search returns the leftmost insertion point for every sorted list, including duplicates, targets past either end and the empty list."
+    },
+    {
+      "id": "algorithms-lower-bound-d",
+      "result": "d.md",
+      "expected": "reject",
+      "flaw": "wrong-language",
+      "checksOutcome": "failed",
+      "rationale": "The binary search is written in JavaScript as lowerBound, while the brief asks for a Python function lower_bound."
+    }
+  ]
+}

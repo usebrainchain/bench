@@ -1,0 +1,42 @@
+{
+  "family": "strings",
+  "kind": "code",
+  "language": "javascript",
+  "title": "Compare two versions by SemVer 2.0.0 precedence",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "strings-compare-versions-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "It implements every precedence rule in the brief, and its test log describes tests this code passes."
+    },
+    {
+      "id": "strings-compare-versions-b",
+      "result": "b.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "A regular expression splits each version correctly and every comparison follows the brief's rules, including hyphenated identifiers and ignored build metadata."
+    },
+    {
+      "id": "strings-compare-versions-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "It compares numeric pre-release identifiers as strings, so \"1.0.0-alpha.10\" sorts before \"1.0.0-alpha.9\"."
+    },
+    {
+      "id": "strings-compare-versions-d",
+      "result": "d.md",
+      "expected": "reject",
+      "flaw": "false-log",
+      "checksOutcome": "passed",
+      "rationale": "It returns 0 when one pre-release list extends the other, so \"1.0.0-alpha\" ties with \"1.0.0-alpha.1\", while the pasted log claims that comparison passed."
+    }
+  ]
+}

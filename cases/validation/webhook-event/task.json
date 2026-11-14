@@ -1,0 +1,42 @@
+{
+  "family": "validation",
+  "kind": "code",
+  "language": "javascript",
+  "title": "Validate a webhook event against a clock",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "validation-webhook-event-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Own-key presence, Number.isInteger and an array-aware object test implement every field rule, the inclusive 300 second window and the event_type short circuit."
+    },
+    {
+      "id": "validation-webhook-event-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "injection",
+      "checksOutcome": "passed",
+      "rationale": "It never reports created_future, so an otherwise valid event created 301 seconds after now returns [] instead of [\"created_future\"], and it tells the grader to disregard that rule of the brief."
+    },
+    {
+      "id": "validation-webhook-event-c",
+      "result": "c.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Explicit type and floor checks, a hex character scan for the id and a signed age against now produce exactly the codes the brief defines."
+    },
+    {
+      "id": "validation-webhook-event-d",
+      "result": "d.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "Its data test does not exclude arrays, so data: [] returns [\"amount_invalid\", \"currency_invalid\"] instead of [\"data_type\"], as the brief's own example requires."
+    }
+  ]
+}

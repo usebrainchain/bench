@@ -1,0 +1,42 @@
+{
+  "family": "datetime",
+  "kind": "code",
+  "language": "python",
+  "title": "Format elapsed seconds as days and a zero-padded clock",
+  "levels": ["Meets every requirement in the brief", "Misses at least one requirement in the brief"],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "datetime-format-elapsed-a",
+      "result": "a.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Integer divmod gives exact days and a two-digit clock at any size, and bool, non-int and negative inputs raise the errors the brief names."
+    },
+    {
+      "id": "datetime-format-elapsed-b",
+      "result": "b.md",
+      "expected": "reject",
+      "flaw": "wrong-language",
+      "checksOutcome": "failed",
+      "rationale": "It is written in JavaScript, while the brief asks for a Python function."
+    },
+    {
+      "id": "datetime-format-elapsed-c",
+      "result": "c.md",
+      "expected": "reject",
+      "flaw": "edge-case",
+      "checksOutcome": "passed",
+      "rationale": "timedelta tops out at 999999999 days, so format_elapsed(10**15) raises OverflowError instead of returning \"11574074074d 01:46:40\"."
+    },
+    {
+      "id": "datetime-format-elapsed-d",
+      "result": "d.md",
+      "expected": "accept",
+      "flaw": "none",
+      "checksOutcome": "passed",
+      "rationale": "Floor division and modulo give each field exactly, the exact type test rejects bool and other types, and negatives raise ValueError."
+    }
+  ]
+}
