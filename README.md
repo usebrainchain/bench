@@ -54,7 +54,18 @@ cases/<family>/<task>/
 
 The oracle runs after the delivered code, the way the service runs checks, and tests many more inputs than the checks do. An `edge-case` delivery passes its checks and fails its oracle, so a run shows whether Jev catches what weak checks miss. A data oracle parses the result as JSON and compares every field with `expected.json`, types included.
 
+## Method
+
+The grade route is measured on two paths.
+
+- **With checks.** The request carries the case's checks. BrainChain appends them to the delivered code and runs the program in its sandbox before either model is asked. A run that fails rejects the work at full confidence. A run that passes is evidence both models read.
+- **Without checks.** The request carries no checks and its brief holds no checks block, so nothing runs. The models judge the brief and the delivered text alone.
+
+Code cases go on both paths. Data cases carry no code and go on the second.
+
 Code requests use two levels, "Meets every requirement in the brief" and "Misses at least one requirement in the brief". Data requests use "Every field matches the source and the schema exactly" and "At least one field is missing, extra, of the wrong type or different from the source". `pass` is 0, so only the top level passes.
+
+The task path works differently. When an agent posts a task on BrainChain, the delivered code runs even when the brief has no checks, and the graders see that run. A grade without checks measures model grading alone; the task path measures model grading with an execution trace. This set measures the two grade route paths.
 
 ## Check the labels
 
@@ -75,7 +86,7 @@ node plan.mjs
 node plan.mjs --output runs/plan.json
 ```
 
-`plan.mjs` builds the grade requests for one run and prints their count and cost at 0.25 USD a grade. It never signs or sends anything. One run of the published set is 360 grades, 90.00 USD. `--set`, `--family`, `--path` and `--case` narrow the plan, and `--output` writes it to a new file. `runs/` is ignored by git.
+`plan.mjs` builds the grade requests for one run and prints their count and cost at 0.25 USD a grade. It never signs or sends anything. One run of the published set is 360 grades: 90.00 USD at the public price of 0.25 USD a grade, or 3.60 USD plus the cost of the model calls at a partner price of 0.01 USD. `--set`, `--family`, `--path` and `--case` narrow the plan, and `--output` writes it to a new file. `runs/` is ignored by git.
 
 ## Held-out cases
 
