@@ -1,0 +1,21 @@
+{
+    "order_number": "4471-R2",
+    "replaces": "4471",
+    "customer": "Komorebi Interiors",
+    "order_date": "2026-11-18",
+    "needed_by": "2026-11-27",
+    "currency": "JPY",
+    "items": [
+        {
+            "description": "Steel bracket",
+            "quantity": 24,
+            "unit_price_minor": 380
+        },
+        {
+            "description": "Wall anchor set",
+            "quantity": 3,
+            "unit_price_minor": 650
+        }
+    ],
+    "total_minor": 11070
+}

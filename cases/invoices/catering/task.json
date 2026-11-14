@@ -1,0 +1,40 @@
+{
+  "family": "invoices",
+  "kind": "data",
+  "title": "Extract a catering invoice with line items",
+  "levels": [
+    "Every field matches the source and the schema exactly",
+    "At least one field is missing, extra, of the wrong type or different from the source"
+  ],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "invoices-catering-a",
+      "result": "a.txt",
+      "expected": "accept",
+      "flaw": "none",
+      "rationale": "Every field and all three line items match the invoice, and due_date is null because the invoice states no due date."
+    },
+    {
+      "id": "invoices-catering-b",
+      "result": "b.txt",
+      "expected": "reject",
+      "flaw": "invented-value",
+      "rationale": "due_date is \"2026-11-11\", a date the invoice never states, where the schema requires null when no due date is given."
+    },
+    {
+      "id": "invoices-catering-c",
+      "result": "c.txt",
+      "expected": "reject",
+      "flaw": "wrong-type",
+      "rationale": "total_minor is the string \"45000\" where the schema requires an integer, 45000."
+    },
+    {
+      "id": "invoices-catering-d",
+      "result": "d.txt",
+      "expected": "accept",
+      "flaw": "none",
+      "rationale": "The values, types and line item order all match the invoice; the keys are only arranged differently."
+    }
+  ]
+}

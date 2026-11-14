@@ -1,0 +1,1 @@
+{"status":"unpaid","amount_due_minor":34848,"currency":"EUR","purchase_order":"PO-77310","due_date":"2026-12-03","issue_date":"2026-11-03","vendor":"Northwind Cloud Ltd","invoice_number":"NW-2026-0418"}

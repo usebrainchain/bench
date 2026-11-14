@@ -1,0 +1,1 @@
+{"contact_email":"workshops@tejo-events.example.com","registration_url":"https://events.example.com/pbt-2026/register","capacity":null,"registration_deadline":"2026-11-17","venue":"Tejo Conference Centre, Hall B","duration_minutes":180,"start_time":"09:30","date":"2026-11-24","event_name":"Property-Based Testing in Practice"}

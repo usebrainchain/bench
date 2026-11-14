@@ -1,0 +1,40 @@
+{
+  "family": "orders",
+  "kind": "data",
+  "title": "Extract a bakery pickup order",
+  "levels": [
+    "Every field matches the source and the schema exactly",
+    "At least one field is missing, extra, of the wrong type or different from the source"
+  ],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "orders-bakery-order-a",
+      "result": "a.txt",
+      "expected": "reject",
+      "flaw": "extra-field",
+      "rationale": "It adds a total_minor field that the schema does not list, where the object must hold exactly the nine specified fields."
+    },
+    {
+      "id": "orders-bakery-order-b",
+      "result": "b.txt",
+      "expected": "accept",
+      "flaw": "none",
+      "rationale": "Every field matches the order form, with the phone in E.164 form and both amounts in cents."
+    },
+    {
+      "id": "orders-bakery-order-c",
+      "result": "c.txt",
+      "expected": "reject",
+      "flaw": "prose",
+      "rationale": "It summarises the order in sentences instead of returning the JSON object the brief requires."
+    },
+    {
+      "id": "orders-bakery-order-d",
+      "result": "d.txt",
+      "expected": "accept",
+      "flaw": "none",
+      "rationale": "All nine fields carry the form's values in the required forms, with the three items in order."
+    }
+  ]
+}

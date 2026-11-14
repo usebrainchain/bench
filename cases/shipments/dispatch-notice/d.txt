@@ -1,0 +1,1 @@
+{"destination_country":"ES","weight_grams":7400,"package_count":2,"estimated_delivery":"2026-11-19","ship_date":"2026-11-16","tracking_number":"JD014600003850927641","carrier":"DHL Express","order_number":"58-221-907"}

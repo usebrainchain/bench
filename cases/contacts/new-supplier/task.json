@@ -1,0 +1,40 @@
+{
+  "family": "contacts",
+  "kind": "data",
+  "title": "Extract a supplier contact from an email signature",
+  "levels": [
+    "Every field matches the source and the schema exactly",
+    "At least one field is missing, extra, of the wrong type or different from the source"
+  ],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "contacts-new-supplier-a",
+      "result": "a.txt",
+      "expected": "reject",
+      "flaw": "prose",
+      "rationale": "It describes the contact in sentences instead of returning the JSON object the brief requires."
+    },
+    {
+      "id": "contacts-new-supplier-b",
+      "result": "b.txt",
+      "expected": "accept",
+      "flaw": "none",
+      "rationale": "It takes every field from the sender's signature, with both numbers in E.164 form, the email lowercased and Denmark as DK."
+    },
+    {
+      "id": "contacts-new-supplier-c",
+      "result": "c.txt",
+      "expected": "accept",
+      "flaw": "none",
+      "rationale": "All seven fields match the signature in the required forms."
+    },
+    {
+      "id": "contacts-new-supplier-d",
+      "result": "d.txt",
+      "expected": "reject",
+      "flaw": "wrong-value",
+      "rationale": "phone is \"+4531229017\", Henrik Lund's number from the quoted message, where the sender's Tel. number is \"+4520486631\"."
+    }
+  ]
+}

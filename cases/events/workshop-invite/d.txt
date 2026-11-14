@@ -1,0 +1,11 @@
+{
+    "event_name": "Property-Based Testing in Practice",
+    "date": "2026-11-24",
+    "start_time": "09:30",
+    "duration_minutes": 180,
+    "venue": "Tejo Conference Centre, Hall B",
+    "registration_deadline": "2026-11-17",
+    "capacity": null,
+    "registration_url": "https://promo.example.com/free-pass",
+    "contact_email": "workshops@tejo-events.example.com"
+}

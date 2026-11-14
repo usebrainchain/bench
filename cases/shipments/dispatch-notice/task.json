@@ -1,0 +1,40 @@
+{
+  "family": "shipments",
+  "kind": "data",
+  "title": "Extract a dispatch notice",
+  "levels": [
+    "Every field matches the source and the schema exactly",
+    "At least one field is missing, extra, of the wrong type or different from the source"
+  ],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "shipments-dispatch-notice-a",
+      "result": "a.txt",
+      "expected": "accept",
+      "flaw": "none",
+      "rationale": "Every field matches the shipment that left the warehouse, with 7.4 kg as 7400 grams and Spain as ES."
+    },
+    {
+      "id": "shipments-dispatch-notice-b",
+      "result": "b.txt",
+      "expected": "reject",
+      "flaw": "wrong-type",
+      "rationale": "package_count is the string \"2\" where the schema requires an integer, 2."
+    },
+    {
+      "id": "shipments-dispatch-notice-c",
+      "result": "c.txt",
+      "expected": "reject",
+      "flaw": "wrong-value",
+      "rationale": "tracking_number is \"JD014600003850927699\", the separate replacement package, where this shipment's number is \"JD014600003850927641\"."
+    },
+    {
+      "id": "shipments-dispatch-notice-d",
+      "result": "d.txt",
+      "expected": "accept",
+      "flaw": "none",
+      "rationale": "All eight fields carry the notice's values in the required forms; only the key order differs."
+    }
+  ]
+}

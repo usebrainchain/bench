@@ -1,0 +1,10 @@
+{
+    "order_number": "58-221-907",
+    "carrier": "DHL Express",
+    "tracking_number": "JD014600003850927699",
+    "ship_date": "2026-11-16",
+    "estimated_delivery": "2026-11-19",
+    "package_count": 2,
+    "weight_grams": 7400,
+    "destination_country": "ES"
+}

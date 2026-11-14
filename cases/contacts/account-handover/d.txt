@@ -1,0 +1,11 @@
+{
+  "previous_owner": "Pieter de Vries",
+  "start_date": "2026-12-01",
+  "office": "Amsterdam",
+  "owner_title": null,
+  "owner_mobile": null,
+  "owner_phone": "+31205550192",
+  "owner_email": "noor.haddad@northbeam.example.com",
+  "owner_name": "Noor Haddad",
+  "account": "Kestrel Robotics"
+}

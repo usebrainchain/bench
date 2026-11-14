@@ -1,0 +1,26 @@
+{
+  "invoice_number": "C-1182",
+  "vendor": "Harbor Lane Catering",
+  "customer": "Fenwick & Doyle Architects",
+  "issue_date": "2026-10-12",
+  "due_date": "2026-11-11",
+  "currency": "GBP",
+  "total_minor": 45000,
+  "line_items": [
+    {
+      "description": "Sandwich platter (serves 10)",
+      "quantity": 4,
+      "unit_price_minor": 6200
+    },
+    {
+      "description": "Fruit bowl",
+      "quantity": 2,
+      "unit_price_minor": 1850
+    },
+    {
+      "description": "Coffee, per person",
+      "quantity": 40,
+      "unit_price_minor": 225
+    }
+  ]
+}

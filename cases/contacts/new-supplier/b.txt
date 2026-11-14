@@ -1,0 +1,9 @@
+{
+  "email": "sofie.andersen@fjord-packaging.example.com",
+  "name": "Sofie Andersen",
+  "company": "Fjord Packaging A/S",
+  "job_title": "Key Account Manager",
+  "country": "DK",
+  "mobile": "+4561170398",
+  "phone": "+4520486631"
+}

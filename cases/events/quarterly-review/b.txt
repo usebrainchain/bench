@@ -1,0 +1,14 @@
+{
+  "title": "Q3 business review",
+  "date": "2026-10-15",
+  "start_time": "14:30",
+  "end_time": "16:00",
+  "utc_offset": "+02:00",
+  "location": "Wis\u0142a room, 4th floor",
+  "organizer_email": "marta.kowalczyk@lumen-analytics.example.com",
+  "attendees": [
+    "Tomasz Nowak",
+    "Aiko Tanaka",
+    "Samuel Osei"
+  ]
+}

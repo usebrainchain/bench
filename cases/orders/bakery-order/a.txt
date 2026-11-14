@@ -1,0 +1,25 @@
+{
+  "customer": "Oduya Events",
+  "contact_phone": "+254722418305",
+  "pickup_date": "2026-12-12",
+  "pickup_time": "07:45",
+  "items": [
+    {
+      "name": "Sourdough loaf (large)",
+      "quantity": 2
+    },
+    {
+      "name": "Cinnamon roll",
+      "quantity": 36
+    },
+    {
+      "name": "Celebration cake (30 cm)",
+      "quantity": 1
+    }
+  ],
+  "inscription": "Happy 10th, Oduya Events",
+  "currency": "KES",
+  "deposit_minor": 250000,
+  "balance_minor": 730000,
+  "total_minor": 980000
+}

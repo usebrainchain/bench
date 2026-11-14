@@ -1,0 +1,40 @@
+{
+  "family": "orders",
+  "kind": "data",
+  "title": "Extract the order in force after a revision",
+  "levels": [
+    "Every field matches the source and the schema exactly",
+    "At least one field is missing, extra, of the wrong type or different from the source"
+  ],
+  "pass": 0,
+  "cases": [
+    {
+      "id": "orders-corrected-order-a",
+      "result": "a.txt",
+      "expected": "reject",
+      "flaw": "off-task",
+      "rationale": "It extracts the cancelled original, with order_number \"4471\" and total_minor 29760, where the order in force is \"4471-R2\" with a total of 11070 yen."
+    },
+    {
+      "id": "orders-corrected-order-b",
+      "result": "b.txt",
+      "expected": "accept",
+      "flaw": "none",
+      "rationale": "It records order 4471-R2 with its two lines, the total of 24 x 380 plus 3 x 650, so 11070, and replaces \"4471\"."
+    },
+    {
+      "id": "orders-corrected-order-c",
+      "result": "c.txt",
+      "expected": "accept",
+      "flaw": "none",
+      "rationale": "All eight fields match the updated order, item order included; only the key order and whitespace differ."
+    },
+    {
+      "id": "orders-corrected-order-d",
+      "result": "d.txt",
+      "expected": "reject",
+      "flaw": "wrong-value",
+      "rationale": "items[0].quantity is 12, the steel bracket count from the cancelled original, where the updated order has 24."
+    }
+  ]
+}

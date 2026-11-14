@@ -1,0 +1,21 @@
+{
+  "order_number": "4471",
+  "replaces": null,
+  "customer": "Komorebi Interiors",
+  "order_date": "2026-11-18",
+  "needed_by": "2026-11-27",
+  "currency": "JPY",
+  "items": [
+    {
+      "description": "Oak shelf 80 cm",
+      "quantity": 6,
+      "unit_price_minor": 4200
+    },
+    {
+      "description": "Steel bracket",
+      "quantity": 12,
+      "unit_price_minor": 380
+    }
+  ],
+  "total_minor": 29760
+}

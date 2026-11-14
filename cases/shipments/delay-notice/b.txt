@@ -1,0 +1,1 @@
+{"shipment_id":"7720-KX","container":"MSKU 481920-3","vessel":"Nordic Harmony","destination_port":"Port of Felixstowe","original_arrival":"2026-12-02","new_arrival":"2026-12-09","status":"delayed","delay_reason":"port closure due to weather"}
