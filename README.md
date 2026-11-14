@@ -88,6 +88,47 @@ node plan.mjs --output runs/plan.json
 
 `plan.mjs` builds the grade requests for one run and prints their count and cost at 0.25 USD a grade. It never signs or sends anything. One run of the published set is 360 grades: 90.00 USD at the public price of 0.25 USD a grade, or 3.60 USD plus the cost of the model calls at a partner price of 0.01 USD. `--set`, `--family`, `--path` and `--case` narrow the plan, and `--output` writes it to a new file. `runs/` is ignored by git.
 
+## Run the set
+
+Install the x402 client once with `npm ci`. Then:
+
+```sh
+node run.mjs --dry
+BENCH_PAYER_KEY_FILE=path/to/bench.key node run.mjs --execute --budget-usd 3.60 --output runs/2026-W47.json
+```
+
+`run.mjs` pays for each grade through `POST /x402/grades/for/bench`, the route BrainChain lists for this set's wallet at 0.01 a grade. A run of the published set is 360 grades for 3.60 USDG. `--held-out` adds the held-out cases, 540 grades for 5.40 USDG. `--pay-on base` pays in USDC on Base. `--path`, `--family` and `--case` narrow a run the way they narrow a plan. `--dry` prints the run and reads no key. Given `--budget-usd` and `--output`, it also says whether `--execute` would take them.
+
+The runner pays by EIP-3009 on both chains. The wallet signs one transfer authorization per grade, for 0.01 to the desk's wallet, valid for the window the offer sets. That takes no approval transaction and leaves no allowance standing on the wallet. Paying through Permit2 would need a standing allowance, and the x402 client can sign a second permit when that allowance runs short.
+
+The runner keeps these rules:
+
+- It reads the route's offer before every payment. It stops unless the route exists and asks exactly 0.01 to the desk's wallet in the expected token, so a missing partner entry cannot charge the public price.
+- `--budget-usd` must cover the whole run. Each grade is reserved against it before it is signed.
+- It writes each payment to the manifest before it signs, and the grade id as soon as it has one. Every write reaches the disk first, so a crash leaves every payment on record.
+- It signs once per grade. It stops at a refused payment, at a grade whose outcome it cannot confirm, and at a grade with checks that comes back without a run of them. A grade still being decided does not stop it. Three at once do.
+- `--resume` reads the grades a manifest paid for. It never signs.
+- `--continue` pays for the grades a stopped run never signed. It refuses while any grade may have been paid without a verdict. A person checks that payment and its grade, then records the outcome in the manifest.
+- It reads the key from the file `BENCH_PAYER_KEY_FILE` names, only once a payment is due, and only when no other user can read that file. The manifest holds no key and no signature.
+
+The manifest in `runs/` holds the plan, the budget, and for each grade its phase, grade id, payment transaction and verdict.
+
+The service answers a repeat of the same request from the same wallet with its first grade for 30 minutes. The runner stops on an answer for a grade it did not pay, so two runs of the same cases start at least half an hour apart.
+
+## Read a run
+
+```sh
+node report.mjs --input runs/2026-W47.json
+```
+
+`report.mjs` joins each verdict in the manifest with its case's label. It refuses a manifest whose requests or labels differ from the case files, and one with undecided grades unless `--partial` is given. It reads nothing over the network and sends nothing.
+
+For each path it counts false acceptances, the wrong deliveries Jev accepted out of all wrong ones, and false rejections, the correct deliveries it rejected out of all correct ones. Each count has its Wilson 95% interval, and the same counts follow by kind and by family. Each case links to its decision page and its grade. On the checks path it also shows how the service's run of the checks ended, beside the outcome `task.json` records.
+
+It writes `results/<week>.json` and `results/<week>.md`, named for the ISO week the run started, once per week. The JSON ends with the inscription record, `{ "brainchain": 1, "kind": "bench", ... }`. The record holds the week, the run, the commit, a hash of every request sent, and per path the counts and rates. It names no case and no wallet. The report builds the record and does not send it.
+
+A run with held-out cases counts them in the rates and adds a split by set. The case list names published cases only, so a held-out label stays unpublished.
+
 ## Held-out cases
 
 A third of each family's tasks stay out of this repository, in `held-out/`, which git ignores. `split.mjs` chose them at random from seed 617983144, recorded in `split.json`. A whole task is held out, so no brief, check or oracle of a held-out case is public.
