@@ -351,6 +351,8 @@ async function pay(manifest, save, deps, waitSeconds) {
     if (pending.length > 0) await settle(pending, manifest, save, deps, 0);
     const undecided = manifest.entries.filter((item) => item.phase === "pending").length;
     if (undecided >= MAX_UNDECIDED) return stop(manifest, save, deps, `${undecided} paid grades are still undecided; --resume reads them and --continue pays the rest`);
+    const unchecked = manifest.entries.find((item) => item.phase === "completed" && item.path === "with-checks" && !item.checks);
+    if (unchecked) return stop(manifest, save, deps, `the service decided ${key(unchecked)} without running its checks, so the with-checks path is not being measured`);
     delete entry.error;
     try {
       const built = requests.get(key(entry));

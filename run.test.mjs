@@ -54,6 +54,7 @@ async function harness(t, configuration = {}) {
     const decision = { id: "4812", record: `https://brain.usebrainchain.com/records/${RECORD}.json`, page: "https://usebrainchain.com/decision?id=4812" };
     return { ...base, accepted: true, answer: "accept", passProbability: 0.92, bar: 0.8, confidence: 0.92, decision, ...verdict };
   };
+  const decided = (entry) => view(entry.grade, "graded", entry.path === "with-checks" ? { checks: { language: "python", outcome: "passed" } } : {});
   const deps = {
     sleep: async () => {},
     async getAccount() {
@@ -87,13 +88,13 @@ async function harness(t, configuration = {}) {
         assert.equal(url, ENDPOINT);
         assert.ok(init.headers["PAYMENT-SIGNATURE"].length > 0);
         assert.equal(createHash("sha256").update(init.body).digest("hex"), entry.payloadHash, "the body is the case's request");
-        return configuration.post?.(entry, view) ?? Response.json(view(entry.grade));
+        return configuration.post?.(entry, view) ?? Response.json(decided(entry));
       }
       counts.polls += 1;
       assert.equal(init.method, "GET");
       const entry = manifest.entries.find((item) => item.grade && statusUrl(item.grade) === url);
       assert.ok(entry, `read a grade the manifest does not hold: ${url}`);
-      return configuration.poll?.(entry, view) ?? Response.json(view(entry.grade));
+      return configuration.poll?.(entry, view) ?? Response.json(decided(entry));
     },
   };
   return { options, preset, deps, output, counts, typed, saved, configuration };
@@ -323,6 +324,14 @@ test("slow grades do not stop a run until three are undecided", async (t) => {
   assert.ok(phases(continued).every((phase) => phase === "completed"));
   assert.equal(continued.stopped, undefined);
   assert.equal(h.counts.signatures, 8);
+});
+
+test("a with-checks grade decided without a checks run stops the run", async (t) => {
+  const h = await harness(t, { post: (entry, view) => Response.json(view(entry.grade)) });
+  const manifest = await runBench(h.options, h.deps);
+  assert.deepEqual(phases(manifest), ["completed", "planned", "planned"]);
+  assert.match(manifest.stopped.reason, /decided algorithms-edit-distance-b with-checks without running its checks/);
+  assert.equal(h.counts.signatures, 1);
 });
 
 test("a reply for another grade or pointing elsewhere is not trusted, and only the paid grade is read", async (t) => {
