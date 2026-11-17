@@ -257,7 +257,9 @@ function gradeView(raw, preset) {
   guard(typeof raw.decision?.id === "string" && /^\d{1,20}$/.test(raw.decision.id), "the verdict names no decision");
   guard(typeof raw.decision.record === "string" && raw.decision.record.length <= 2048 && URL.canParse(raw.decision.record), "the decision record is not a URL");
   const record = new URL(raw.decision.record);
-  const onService = record.origin === SERVICE && /^\/records\/0x[0-9a-f]{64}\.json$/i.test(record.pathname) && !record.search && !record.hash && !record.username && !record.password;
+  // Since release 6 the link carries the record's evidence hash as a fragment; nothing else may follow it.
+  const fragment = !record.hash || /^#evidence=0x[0-9a-f]{64}$/i.test(record.hash);
+  const onService = record.origin === SERVICE && /^\/records\/0x[0-9a-f]{64}\.json$/i.test(record.pathname) && !record.search && fragment && !record.username && !record.password;
   guard(onService, "the decision record is not on the service");
   return {
     ...view,

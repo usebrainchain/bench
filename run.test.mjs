@@ -354,6 +354,7 @@ test("a reply for another grade or pointing elsewhere is not trusted, and only t
   assert.equal(elsewhere.counts.polls, 3);
   for (const change of [
     (raw) => { raw.decision.record = "https://example.invalid/records/x.json"; },
+    (raw) => { raw.decision.record += "#next=https://example.invalid"; },
     (raw) => { raw.accepted = false; },
     (raw) => { raw.passProbability = 1.5; },
     (raw) => { raw.network = "eip155:1"; },
@@ -419,4 +420,16 @@ test("errors never carry a signature, a payment header or a local path", () => {
   const header = "A".repeat(200);
   const message = safeError(new Error(`failed at ${join(homedir(), "x")} with ${SIGNATURE} and ${header}\nsecond line`));
   assert.equal(message, `failed at ${join("~", "x")} with 0x… and …`);
+});
+
+test("a decision record that carries its evidence hash, as release 6 serves it, completes", async (t) => {
+  const h = await harness(t, {
+    post: (entry, view) => {
+      const raw = structuredClone(view(entry.grade, "graded", entry.path === "with-checks" ? { checks: { language: "python", outcome: "passed" } } : {}));
+      raw.decision.record += `#evidence=0x${"ab".repeat(32)}`;
+      return Response.json(raw);
+    },
+  });
+  const manifest = await runBench(h.options, h.deps);
+  assert.deepEqual(phases(manifest), ["completed", "completed", "completed"]);
 });
