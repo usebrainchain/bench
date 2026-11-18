@@ -1,0 +1,46 @@
+{
+  "type": "object",
+  "properties": {
+    "order_number": {
+      "type": "string"
+    },
+    "carrier": {
+      "type": "string"
+    },
+    "tracking_number": {
+      "type": "string"
+    },
+    "ship_date": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "estimated_delivery": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "package_count": {
+      "type": "integer"
+    },
+    "weight_grams": {
+      "type": "integer"
+    },
+    "destination_country": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 2
+    }
+  },
+  "required": [
+    "order_number",
+    "carrier",
+    "tracking_number",
+    "ship_date",
+    "estimated_delivery",
+    "package_count",
+    "weight_grams",
+    "destination_country"
+  ],
+  "additionalProperties": false
+}

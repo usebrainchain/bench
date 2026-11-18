@@ -14,7 +14,7 @@ Joins each verdict in a run's manifest with its case's label and writes results/
 It builds the inscription record and sends nothing. --partial reports a run whose grades are not all decided.`;
 
 const Z = 1.959964;
-const LABELS = { "with-checks": "With checks", "without-checks": "Without checks" };
+const LABELS = { "with-checks": "With checks", "without-checks": "Without checks", "with-schema": "With a schema" };
 const GRADE = /^0x[0-9a-f]{64}$/;
 
 class ReportError extends Error {}
@@ -49,7 +49,7 @@ export function validateManifest(manifest) {
   guard(canonical(manifest.preset) === canonical(presetFor(manifest.preset?.payOn)), "the run was paid on terms this report does not know");
   guard(Array.isArray(manifest.sets) && manifest.sets.length > 0 && manifest.sets.every((set) => ["published", "held-out"].includes(set)), "the manifest names no case sets");
   guard(!Number.isNaN(Date.parse(manifest.createdAt)), "the manifest has no start time");
-  const { entries, problem } = selectEntries({ sets: manifest.sets, cases: [...new Set(manifest.entries.map((entry) => entry.case))] });
+  const { entries, problem } = selectEntries({ sets: manifest.sets, cases: [...new Set(manifest.entries.map((entry) => entry.case))], all: true });
   guard(!problem, `the run's cases are not all in this checkout: ${problem}`);
   const current = new Map(entries.map((entry) => [key(entry), entry]));
   const seen = new Set();
@@ -58,7 +58,7 @@ export function validateManifest(manifest) {
     guard(label && !seen.has(key(entry)), `${key(entry)} is not a grade of these cases, or is listed twice`);
     seen.add(key(entry));
     guard(entry.payloadHash === label.payloadHash, `${key(entry)}: the request the run sent differs from the case on disk`);
-    for (const field of ["set", "family", "kind", "flaw", "expected", "checksOutcome"]) guard(entry[field] === label[field], `${key(entry)}: its ${field} differs from task.json`);
+    for (const field of ["set", "family", "kind", "flaw", "expected", "checksOutcome", "shapeOutcome"]) guard(entry[field] === label[field], `${key(entry)}: its ${field} differs from task.json`);
     if (entry.phase !== "completed") continue;
     guard(GRADE.test(entry.grade ?? "") && typeof entry.accepted === "boolean" && /^\d{1,20}$/.test(entry.decision?.id ?? ""), `${key(entry)}: the verdict is incomplete`);
   }
@@ -99,6 +99,7 @@ function row(entry) {
     passProbability: entry.passProbability,
     bar: entry.bar,
     ...(entry.path === "with-checks" ? { checks: { expected: entry.checksOutcome, service: entry.checks ?? null } } : {}),
+    ...(entry.path === "with-schema" ? { shape: { expected: entry.shapeOutcome, service: entry.shape ?? null } } : {}),
     status: statusUrl(entry.grade),
     decision: { id: entry.decision.id, page: decisionPage(entry.decision.id), record: entry.decision.record },
   };

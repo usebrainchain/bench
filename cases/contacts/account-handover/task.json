@@ -13,6 +13,7 @@
       "result": "a.txt",
       "expected": "accept",
       "flaw": "none",
+      "shapeOutcome": "passed",
       "rationale": "Every field matches the note, with owner_mobile and owner_title null because the note gives neither."
     },
     {
@@ -20,6 +21,7 @@
       "result": "b.txt",
       "expected": "reject",
       "flaw": "invented-value",
+      "shapeOutcome": "passed",
       "rationale": "owner_title is \"Account Manager\", a title the note never gives, where the schema requires null."
     },
     {
@@ -27,6 +29,7 @@
       "result": "c.txt",
       "expected": "reject",
       "flaw": "extra-field",
+      "shapeOutcome": "failed",
       "rationale": "It adds a working_days field that the schema does not list, where the object must hold exactly the nine specified fields."
     },
     {
@@ -34,6 +37,7 @@
       "result": "d.txt",
       "expected": "accept",
       "flaw": "none",
+      "shapeOutcome": "passed",
       "rationale": "All nine fields match the note in the required forms, including the two nulls; only the key order differs."
     }
   ]

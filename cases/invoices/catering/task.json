@@ -13,6 +13,7 @@
       "result": "a.txt",
       "expected": "accept",
       "flaw": "none",
+      "shapeOutcome": "passed",
       "rationale": "Every field and all three line items match the invoice, and due_date is null because the invoice states no due date."
     },
     {
@@ -20,6 +21,7 @@
       "result": "b.txt",
       "expected": "reject",
       "flaw": "invented-value",
+      "shapeOutcome": "passed",
       "rationale": "due_date is \"2026-11-11\", a date the invoice never states, where the schema requires null when no due date is given."
     },
     {
@@ -27,6 +29,7 @@
       "result": "c.txt",
       "expected": "reject",
       "flaw": "wrong-type",
+      "shapeOutcome": "failed",
       "rationale": "total_minor is the string \"45000\" where the schema requires an integer, 45000."
     },
     {
@@ -34,6 +37,7 @@
       "result": "d.txt",
       "expected": "accept",
       "flaw": "none",
+      "shapeOutcome": "passed",
       "rationale": "The values, types and line item order all match the invoice; the keys are only arranged differently."
     }
   ]

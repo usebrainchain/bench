@@ -1,0 +1,52 @@
+{
+  "type": "object",
+  "properties": {
+    "shipment_id": {
+      "type": "string"
+    },
+    "container": {
+      "type": "string"
+    },
+    "vessel": {
+      "type": "string"
+    },
+    "destination_port": {
+      "type": "string"
+    },
+    "original_arrival": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "new_arrival": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "delivered",
+        "delayed",
+        "in_transit"
+      ]
+    },
+    "delay_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "shipment_id",
+    "container",
+    "vessel",
+    "destination_port",
+    "original_arrival",
+    "new_arrival",
+    "status",
+    "delay_reason"
+  ],
+  "additionalProperties": false
+}

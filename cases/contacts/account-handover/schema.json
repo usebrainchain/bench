@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "properties": {
+    "account": {
+      "type": "string"
+    },
+    "owner_name": {
+      "type": "string"
+    },
+    "owner_email": {
+      "type": "string"
+    },
+    "owner_phone": {
+      "type": "string"
+    },
+    "owner_mobile": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "owner_title": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "office": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "start_date": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "previous_owner": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "account",
+    "owner_name",
+    "owner_email",
+    "owner_phone",
+    "owner_mobile",
+    "owner_title",
+    "office",
+    "start_date",
+    "previous_owner"
+  ],
+  "additionalProperties": false
+}

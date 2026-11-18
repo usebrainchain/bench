@@ -44,11 +44,13 @@ Data deliveries can also be `wrong-value`, `wrong-type`, `missing-field`, `extra
 
 ```
 cases/<family>/<task>/
-  task.json        title, levels and pass, then each case: id, result file, expected verdict, flaw, rationale
+  task.json        title, levels and pass, then each case: id, result file, expected verdict, flaw, the outcome of its checks
+                   (code) or of its schema check (data), rationale
   brief.md         what the work had to do
   checks.py|js     the tests an agent sends with the grade request (code)
   oracle.py|js     the hidden test that decides correctness (code)
   expected.json    the exact record the extraction must produce (data)
+  schema.json      the JSON Schema an agent sends with the grade request (data)
   a.md ... d.md    the delivered results (a.txt ... d.txt for data)
 ```
 
@@ -56,12 +58,13 @@ The oracle runs after the delivered code, the way the service runs checks, and t
 
 ## Method
 
-The grade route is measured on two paths.
+The grade route is measured on three paths.
 
 - **With checks.** The request carries the case's checks. BrainChain appends them to the delivered code and runs the program in its sandbox before either model is asked. A run that fails rejects the work at full confidence. A run that passes is evidence both models read.
 - **Without checks.** The request carries no checks and its brief holds no checks block, so nothing runs. The models judge the brief and the delivered text alone.
+- **With a schema.** The request carries the case's JSON Schema in `schema`. BrainChain checks the result against it before either model is asked. A result that does not match rejects the work at full confidence. One that matches leaves the models to judge the values.
 
-Code cases go on both paths. Data cases carry no code and go on the second.
+Code cases go on the first two paths. Data cases carry no code and go on the last two. Each schema states the types, required fields and fixed lengths the brief already gives, so it catches a wrong type, a missing or extra field and a reply that is not JSON, and leaves a wrong or invented value to the models. A run takes the first two paths unless `--path with-schema` names the third, which the grade route serves from the release that checks a schema.
 
 Code requests use two levels, "Meets every requirement in the brief" and "Misses at least one requirement in the brief". Data requests use "Every field matches the source and the schema exactly" and "At least one field is missing, extra, of the wrong type or different from the source". `pass` is 0, so only the top level passes.
 
@@ -75,7 +78,7 @@ Requires Node.js 22 or later and `python3`.
 node check.mjs
 ```
 
-`check.mjs` runs every oracle and every set of checks against its delivery. A correct delivery must pass both, a wrong one must fail its oracle, and each run of the checks must end the way `task.json` records. It also checks every request against the limits the grade route enforces. Each run is its own process with a 10 second limit, no network and no file writes (`sandbox-exec` on macOS, `unshare` on Linux). It runs only code from this repository and is no sandbox for submitted work.
+`check.mjs` runs every oracle and every set of checks against its delivery, and checks every data delivery against its schema the way the grade route does. A correct delivery must pass all of them, a wrong one must fail its oracle, and each run of the checks and each schema check must end the way `task.json` records. It also checks every request against the limits the grade route enforces. Each run is its own process with a 10 second limit, no network and no file writes (`sandbox-exec` on macOS, `unshare` on Linux). It runs only code from this repository and is no sandbox for submitted work.
 
 `--family` narrows the check and `-v` prints each case with the reason its oracle failed.
 
@@ -106,7 +109,7 @@ The runner keeps these rules:
 - It reads the route's offer before every payment. It stops unless the route exists and asks exactly 0.01 to the desk's wallet in the expected token, so a missing partner entry cannot charge the public price.
 - `--budget-usd` must cover the whole run. Each grade is reserved against it before it is signed.
 - It writes each payment to the manifest before it signs, and the grade id as soon as it has one. Every write reaches the disk first, so a crash leaves every payment on record.
-- It signs once per grade. It stops at a refused payment, at a grade whose outcome it cannot confirm, and at a grade with checks that comes back without a run of them. A grade still being decided does not stop it. Three at once do.
+- It signs once per grade. It stops at a refused payment, at a grade whose outcome it cannot confirm, and at a grade with checks that comes back without a run of them, and at a grade with a schema that comes back without its check. A grade still being decided does not stop it. Three at once do.
 - `--resume` reads the grades a manifest paid for. It never signs.
 - `--continue` pays for the grades a stopped run never signed. It refuses while any grade may have been paid without a verdict. A person checks that payment and its grade, then records the outcome in the manifest.
 - It reads the key from the file `BENCH_PAYER_KEY_FILE` names, only once a payment is due, and only when no other user can read that file. The manifest holds no key and no signature.

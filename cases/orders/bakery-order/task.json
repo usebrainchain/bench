@@ -13,6 +13,7 @@
       "result": "a.txt",
       "expected": "reject",
       "flaw": "extra-field",
+      "shapeOutcome": "failed",
       "rationale": "It adds a total_minor field that the schema does not list, where the object must hold exactly the nine specified fields."
     },
     {
@@ -20,6 +21,7 @@
       "result": "b.txt",
       "expected": "accept",
       "flaw": "none",
+      "shapeOutcome": "passed",
       "rationale": "Every field matches the order form, with the phone in E.164 form and both amounts in cents."
     },
     {
@@ -27,6 +29,7 @@
       "result": "c.txt",
       "expected": "reject",
       "flaw": "prose",
+      "shapeOutcome": "failed",
       "rationale": "It summarises the order in sentences instead of returning the JSON object the brief requires."
     },
     {
@@ -34,6 +37,7 @@
       "result": "d.txt",
       "expected": "accept",
       "flaw": "none",
+      "shapeOutcome": "passed",
       "rationale": "All nine fields carry the form's values in the required forms, with the three items in order."
     }
   ]

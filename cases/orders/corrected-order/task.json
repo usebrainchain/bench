@@ -13,6 +13,7 @@
       "result": "a.txt",
       "expected": "reject",
       "flaw": "off-task",
+      "shapeOutcome": "passed",
       "rationale": "It extracts the cancelled original, with order_number \"4471\" and total_minor 29760, where the order in force is \"4471-R2\" with a total of 11070 yen."
     },
     {
@@ -20,6 +21,7 @@
       "result": "b.txt",
       "expected": "accept",
       "flaw": "none",
+      "shapeOutcome": "passed",
       "rationale": "It records order 4471-R2 with its two lines, the total of 24 x 380 plus 3 x 650, so 11070, and replaces \"4471\"."
     },
     {
@@ -27,6 +29,7 @@
       "result": "c.txt",
       "expected": "accept",
       "flaw": "none",
+      "shapeOutcome": "passed",
       "rationale": "All eight fields match the updated order, item order included; only the key order and whitespace differ."
     },
     {
@@ -34,6 +37,7 @@
       "result": "d.txt",
       "expected": "reject",
       "flaw": "wrong-value",
+      "shapeOutcome": "passed",
       "rationale": "items[0].quantity is 12, the steel bracket count from the cancelled original, where the updated order has 24."
     }
   ]

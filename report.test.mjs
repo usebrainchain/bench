@@ -101,6 +101,18 @@ test("each case links its decision page, and its checks run sits beside the labe
   assert.ok(report.cases.filter((row) => row.path === "without-checks").every((row) => !("checks" in row)));
 });
 
+test("a with-schema run reads back against the cases, and its schema check sits beside the label", () => {
+  const manifest = fixture({ cases: INVOICES, path: "with-schema" }, (entry) => entry.shapeOutcome === "passed" && entry.flaw === "none");
+  for (const entry of manifest.entries) entry.shape = entry.shapeOutcome;
+  const report = buildReport(manifest);
+  assert.deepEqual(Object.keys(report.paths), ["with-schema"]);
+  assert.deepEqual(report.cases.map((row) => row.shape), ["passed", "passed", "failed", "passed"].map((expected) => ({ expected, service: expected })));
+  assert.equal(report.paths["with-schema"].graded, 4);
+  const changed = structuredClone(manifest);
+  changed.entries[2].shapeOutcome = "passed";
+  assert.throws(() => validateManifest(changed), /its shapeOutcome differs from task.json/);
+});
+
 test("the inscription record holds totals and rates only", () => {
   const manifest = fixture();
   const report = buildReport(manifest);

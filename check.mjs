@@ -6,6 +6,7 @@ import { parseArgs } from "node:util";
 
 import { codeIn, loadCases, problems, ROOT, SETS } from "./lib/cases.mjs";
 import { refusal, requestsFor } from "./lib/requests.mjs";
+import { checkShape } from "./lib/shape.mjs";
 
 // Only repository-authored cases run here. This is not a sandbox for submitted work.
 const TIMEOUT_MS = 10_000;
@@ -94,7 +95,9 @@ async function judge(item) {
   if (item.kind === "data") {
     const oracle = dataRun(item);
     if ((oracle.outcome === "passed") !== (item.expected === "accept")) issues.push(`oracle ${oracle.outcome} but the case expects ${item.expected}: ${oracle.output}`);
-    return { item, oracle, issues };
+    const shape = checkShape(item.result, item.schema);
+    if (shape.outcome !== item.shapeOutcome) issues.push(`schema ${shape.outcome} but the case says ${item.shapeOutcome}: ${(shape.problems ?? []).join("; ")}`);
+    return { item, oracle, shape, issues };
   }
   const [oracle, checks] = await Promise.all([codeRun(item, item.oracle), codeRun(item, item.checks)]);
   if ((oracle.outcome === "passed") !== (item.expected === "accept")) issues.push(`oracle ${oracle.outcome} but the case expects ${item.expected}: ${reason(oracle)}`);
@@ -145,6 +148,9 @@ console.log(`${cases.length} cases: ${count((item) => item.set)}`);
 console.log(`kind: ${count((item) => item.kind)}; expected: ${count((item) => item.expected)}`);
 console.log(`flaw: ${count((item) => item.flaw)}`);
 console.log(`${runs} isolated runs; ${weak} wrong deliveries pass their checks and fail only the oracle`);
+const shaped = results.filter(({ shape }) => shape);
+const caught = shaped.filter(({ item, shape }) => item.expected === "reject" && shape.outcome === "failed").length;
+console.log(`${shaped.length} data deliveries checked against their schema; ${caught} of ${shaped.filter(({ item }) => item.expected === "reject").length} wrong ones fail it`);
 if (args.verbose) for (const { item, oracle, checks } of results) console.log(`${item.id}: oracle ${oracle.outcome}${checks ? `, checks ${checks.outcome}` : ""}${oracle.outcome === "passed" ? "" : `: ${reason(oracle)}`}`);
 
 if (failures.length > 0) {

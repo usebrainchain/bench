@@ -1,0 +1,53 @@
+{
+  "type": "object",
+  "properties": {
+    "event_name": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "start_time": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 5
+    },
+    "duration_minutes": {
+      "type": "integer"
+    },
+    "venue": {
+      "type": "string"
+    },
+    "registration_deadline": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "capacity": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "registration_url": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_name",
+    "date",
+    "start_time",
+    "duration_minutes",
+    "venue",
+    "registration_deadline",
+    "capacity",
+    "registration_url",
+    "contact_email"
+  ],
+  "additionalProperties": false
+}

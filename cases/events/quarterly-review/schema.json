@@ -1,0 +1,54 @@
+{
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "start_time": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 5
+    },
+    "end_time": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 5
+    },
+    "utc_offset": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 6
+    },
+    "location": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "organizer_email": {
+      "type": "string"
+    },
+    "attendees": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "title",
+    "date",
+    "start_time",
+    "end_time",
+    "utc_offset",
+    "location",
+    "organizer_email",
+    "attendees"
+  ],
+  "additionalProperties": false
+}

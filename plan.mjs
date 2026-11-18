@@ -5,7 +5,7 @@ import { parseArgs } from "node:util";
 
 import { familyTable, PRICE_UNITS, selectEntries } from "./lib/requests.mjs";
 
-const USAGE = `node plan.mjs [--set published|held-out|all] [--path with-checks|without-checks] [--family NAME]... [--case ID]... [--list] [--output plan.json]
+const USAGE = `node plan.mjs [--set published|held-out|all] [--path with-checks|without-checks|with-schema] [--family NAME]... [--case ID]... [--list] [--output plan.json]
 
 Builds the grade requests for one run and prints their count and cost. It never signs, pays or sends anything.`;
 

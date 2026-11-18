@@ -13,6 +13,7 @@
       "result": "a.txt",
       "expected": "reject",
       "flaw": "wrong-value",
+      "shapeOutcome": "passed",
       "rationale": "start_time is \"02:30\", but 2:30 pm in 24-hour form is \"14:30\"."
     },
     {
@@ -20,6 +21,7 @@
       "result": "b.txt",
       "expected": "accept",
       "flaw": "none",
+      "shapeOutcome": "passed",
       "rationale": "Every field matches the email, with 2:30 pm and 4 pm converted to 14:30 and 16:00; the \\u0142 escape is the same character as the source's ł."
     },
     {
@@ -27,6 +29,7 @@
       "result": "c.txt",
       "expected": "accept",
       "flaw": "none",
+      "shapeOutcome": "passed",
       "rationale": "It gives the rescheduled Thursday date, both times in 24-hour form and the three attendees in order; only the key order differs."
     },
     {
@@ -34,6 +37,7 @@
       "result": "d.txt",
       "expected": "reject",
       "flaw": "extra-field",
+      "shapeOutcome": "failed",
       "rationale": "It adds a duration_minutes field that the schema does not list, where the object must hold exactly the eight specified fields."
     }
   ]

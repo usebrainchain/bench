@@ -13,6 +13,7 @@
       "result": "a.txt",
       "expected": "reject",
       "flaw": "prose",
+      "shapeOutcome": "failed",
       "rationale": "It describes the contact in sentences instead of returning the JSON object the brief requires."
     },
     {
@@ -20,6 +21,7 @@
       "result": "b.txt",
       "expected": "accept",
       "flaw": "none",
+      "shapeOutcome": "passed",
       "rationale": "It takes every field from the sender's signature, with both numbers in E.164 form, the email lowercased and Denmark as DK."
     },
     {
@@ -27,6 +29,7 @@
       "result": "c.txt",
       "expected": "accept",
       "flaw": "none",
+      "shapeOutcome": "passed",
       "rationale": "All seven fields match the signature in the required forms."
     },
     {
@@ -34,6 +37,7 @@
       "result": "d.txt",
       "expected": "reject",
       "flaw": "wrong-value",
+      "shapeOutcome": "passed",
       "rationale": "phone is \"+4531229017\", Henrik Lund's number from the quoted message, where the sender's Tel. number is \"+4520486631\"."
     }
   ]

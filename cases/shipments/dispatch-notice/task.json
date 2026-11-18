@@ -13,6 +13,7 @@
       "result": "a.txt",
       "expected": "accept",
       "flaw": "none",
+      "shapeOutcome": "passed",
       "rationale": "Every field matches the shipment that left the warehouse, with 7.4 kg as 7400 grams and Spain as ES."
     },
     {
@@ -20,6 +21,7 @@
       "result": "b.txt",
       "expected": "reject",
       "flaw": "wrong-type",
+      "shapeOutcome": "failed",
       "rationale": "package_count is the string \"2\" where the schema requires an integer, 2."
     },
     {
@@ -27,6 +29,7 @@
       "result": "c.txt",
       "expected": "reject",
       "flaw": "wrong-value",
+      "shapeOutcome": "passed",
       "rationale": "tracking_number is \"JD014600003850927699\", the separate replacement package, where this shipment's number is \"JD014600003850927641\"."
     },
     {
@@ -34,6 +37,7 @@
       "result": "d.txt",
       "expected": "accept",
       "flaw": "none",
+      "shapeOutcome": "passed",
       "rationale": "All eight fields carry the notice's values in the required forms; only the key order differs."
     }
   ]

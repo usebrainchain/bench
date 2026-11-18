@@ -334,6 +334,28 @@ test("a with-checks grade decided without a checks run stops the run", async (t)
   assert.equal(h.counts.signatures, 1);
 });
 
+test("the with-schema path joins a run only when named, and carries each data case's schema outcome", () => {
+  assert.ok(planRun().entries.every((entry) => entry.path !== "with-schema"));
+  const plan = planRun({ path: "with-schema" });
+  assert.equal(plan.entries.length, 40);
+  assert.ok(plan.entries.every((entry) => entry.kind === "data" && ["passed", "failed"].includes(entry.shapeOutcome)));
+});
+
+test("a with-schema grade decided without a shape stops the run, and one with its shape completes", async (t) => {
+  const options = { cases: [DATA, "invoices-catering-c"], path: "with-schema" };
+  const h = await harness(t, { options, post: (entry, view) => Response.json(view(entry.grade)) });
+  const stopped = await runBench(h.options, h.deps);
+  assert.deepEqual(phases(stopped), ["completed", "planned"]);
+  assert.match(stopped.stopped.reason, /decided invoices-catering-a with-schema without checking its schema/);
+  assert.equal(h.counts.signatures, 1);
+
+  const shaped = (entry, view) => Response.json(view(entry.grade, "graded", { shape: { outcome: entry.shapeOutcome } }));
+  const ok = await harness(t, { options, post: shaped, poll: shaped });
+  const done = await runBench(ok.options, ok.deps);
+  assert.deepEqual(phases(done), ["completed", "completed"]);
+  assert.deepEqual(done.entries.map((entry) => entry.shape), ["passed", "failed"]);
+});
+
 test("a reply for another grade or pointing elsewhere is not trusted, and only the paid grade is read", async (t) => {
   const other = `0x${"ab".repeat(32)}`;
   const h = await harness(t, {

@@ -1,0 +1,54 @@
+{
+  "type": "object",
+  "properties": {
+    "invoice_number": {
+      "type": "string"
+    },
+    "vendor": {
+      "type": "string"
+    },
+    "issue_date": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "due_date": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "currency": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 3
+    },
+    "amount_due_minor": {
+      "type": "integer"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "paid",
+        "partially_paid",
+        "unpaid"
+      ]
+    },
+    "purchase_order": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "invoice_number",
+    "vendor",
+    "issue_date",
+    "due_date",
+    "currency",
+    "amount_due_minor",
+    "status",
+    "purchase_order"
+  ],
+  "additionalProperties": false
+}

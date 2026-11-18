@@ -1,0 +1,69 @@
+{
+  "type": "object",
+  "properties": {
+    "invoice_number": {
+      "type": "string"
+    },
+    "vendor": {
+      "type": "string"
+    },
+    "customer": {
+      "type": "string"
+    },
+    "issue_date": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "due_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "currency": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 3
+    },
+    "total_minor": {
+      "type": "integer"
+    },
+    "line_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer"
+          },
+          "unit_price_minor": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "description",
+          "quantity",
+          "unit_price_minor"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "invoice_number",
+    "vendor",
+    "customer",
+    "issue_date",
+    "due_date",
+    "currency",
+    "total_minor",
+    "line_items"
+  ],
+  "additionalProperties": false
+}

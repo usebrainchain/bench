@@ -1,0 +1,72 @@
+{
+  "type": "object",
+  "properties": {
+    "order_number": {
+      "type": "string"
+    },
+    "replaces": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "customer": {
+      "type": "string"
+    },
+    "order_date": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "needed_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "currency": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 3
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer"
+          },
+          "unit_price_minor": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "description",
+          "quantity",
+          "unit_price_minor"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "total_minor": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "order_number",
+    "replaces",
+    "customer",
+    "order_date",
+    "needed_by",
+    "currency",
+    "items",
+    "total_minor"
+  ],
+  "additionalProperties": false
+}

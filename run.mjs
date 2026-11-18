@@ -16,7 +16,7 @@ import { ROOT, taskDirs } from "./lib/cases.mjs";
 import { canonical, familyTable, selectEntries } from "./lib/requests.mjs";
 import { decisionPage, PARTNER, presetFor, SERVICE, statusUrl, usd } from "./lib/service.mjs";
 
-const USAGE = `node run.mjs --dry [--held-out] [--pay-on robinhood|base] [--path with-checks|without-checks] [--family NAME]... [--case ID]...
+const USAGE = `node run.mjs --dry [--held-out] [--pay-on robinhood|base] [--path with-checks|without-checks|with-schema] [--family NAME]... [--case ID]...
 node run.mjs --execute --budget-usd 3.60 --output runs/NAME.json [the same selection]
 node run.mjs --resume --output runs/NAME.json [--wait-seconds 180]
 node run.mjs --continue --output runs/NAME.json [--wait-seconds 180]
@@ -269,6 +269,7 @@ function gradeView(raw, preset) {
     bar: raw.bar,
     confidence: raw.confidence,
     ...(["passed", "failed", "timed out"].includes(raw.checks?.outcome) ? { checks: raw.checks.outcome } : {}),
+    ...(["passed", "failed"].includes(raw.shape?.outcome) ? { shape: raw.shape.outcome } : {}),
     decision: { id: raw.decision.id, page: decisionPage(raw.decision.id), record: record.href },
   };
 }
@@ -334,7 +335,7 @@ async function submit(entry, request, header, preset, deps) {
 function requestsOf(manifest) {
   const ids = [...new Set(manifest.entries.filter((entry) => UNPAID.includes(entry.phase)).map((entry) => entry.case))];
   if (ids.length === 0) return new Map();
-  const { entries, problem } = selectEntries({ sets: manifest.sets, cases: ids });
+  const { entries, problem } = selectEntries({ sets: manifest.sets, cases: ids, all: true });
   guard(!problem, problem);
   return new Map(entries.map((entry) => [key(entry), entry]));
 }
@@ -355,6 +356,8 @@ async function pay(manifest, save, deps, waitSeconds) {
     if (undecided >= MAX_UNDECIDED) return stop(manifest, save, deps, `${undecided} paid grades are still undecided; --resume reads them and --continue pays the rest`);
     const unchecked = manifest.entries.find((item) => item.phase === "completed" && item.path === "with-checks" && !item.checks);
     if (unchecked) return stop(manifest, save, deps, `the service decided ${key(unchecked)} without running its checks, so the with-checks path is not being measured`);
+    const unshaped = manifest.entries.find((item) => item.phase === "completed" && item.path === "with-schema" && !item.shape);
+    if (unshaped) return stop(manifest, save, deps, `the service decided ${key(unshaped)} without checking its schema, so the with-schema path is not being measured`);
     delete entry.error;
     try {
       const built = requests.get(key(entry));
