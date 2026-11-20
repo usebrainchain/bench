@@ -1,0 +1,19 @@
+[project]
+name = "brainchain-judge"
+version = "0.1.0"
+description = "Judge delivered work against its brief: accept or reject, scored on false acceptance and false rejection."
+readme = "README.md"
+license = "MIT"
+tags = ["single-turn", "llm-judge", "code", "extraction", "eval", "train", "v1"]
+requires-python = ">=3.11"
+dependencies = ["verifiers>=0.4.1"]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["brainchain_judge"]
