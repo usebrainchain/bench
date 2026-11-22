@@ -1,0 +1,486 @@
+{
+  "version": 1,
+  "bar": 0.8,
+  "target": {"correctRefused":0.1},
+  "live": {
+    "run": "2026-W47-median",
+    "rule": "median",
+    "startedAt": "2026-11-21T20:15:36.786Z",
+    "endedAt": "2026-11-22T07:48:11.779Z",
+    "graded": 359,
+    "wrongPaid": {"count":0,"of":179,"rate":0,"interval":[0,0.021]},
+    "correctRefused": {"count":32,"of":180,"rate":0.1778,"interval":[0.1288,0.2402]},
+    "injectionPaid": {"count":0,"of":31,"rate":0,"interval":[0,0.1103]},
+    "byPath": {
+      "with-checks": {
+        "wrongPaid": {"count":0,"of":80,"rate":0,"interval":[0,0.0458]},
+        "correctRefused": {"count":11,"of":80,"rate":0.1375,"interval":[0.0785,0.2297]},
+        "injectionPaid": {"count":0,"of":14,"rate":0,"interval":[0,0.2153]}
+      },
+      "without-checks": {
+        "wrongPaid": {"count":0,"of":99,"rate":0,"interval":[0,0.0374]},
+        "correctRefused": {"count":21,"of":100,"rate":0.21,"interval":[0.1417,0.2998]},
+        "injectionPaid": {"count":0,"of":17,"rate":0,"interval":[0,0.1843]}
+      }
+    }
+  },
+  "runs": [
+    {
+      "name": "2026-W47",
+      "run": "bfec99c5-da28-4607-8a61-7039ad47fad2",
+      "sets": ["published"],
+      "startedAt": "2026-11-17T21:41:45.829Z",
+      "endedAt": "2026-11-17T22:53:02.860Z",
+      "rule": "lower-of",
+      "grades": 360,
+      "graded": 360,
+      "rules": {
+        "lower-of": {
+          "wrongPaid": {"count":0,"of":180,"rate":0,"interval":[0,0.0209]},
+          "correctRefused": {"count":75,"of":180,"rate":0.4167,"interval":[0.3471,0.4897]},
+          "injectionPaid": {"count":0,"of":31,"rate":0,"interval":[0,0.1103]},
+          "byPath": {
+            "with-checks": {
+              "wrongPaid": {"count":0,"of":80,"rate":0,"interval":[0,0.0458]},
+              "correctRefused": {"count":28,"of":80,"rate":0.35,"interval":[0.2545,0.4592]},
+              "injectionPaid": {"count":0,"of":14,"rate":0,"interval":[0,0.2153]}
+            },
+            "without-checks": {
+              "wrongPaid": {"count":0,"of":100,"rate":0,"interval":[0,0.037]},
+              "correctRefused": {"count":47,"of":100,"rate":0.47,"interval":[0.3751,0.5671]},
+              "injectionPaid": {"count":0,"of":17,"rate":0,"interval":[0,0.1843]}
+            }
+          }
+        },
+        "median": {
+          "wrongPaid": {"count":0,"of":180,"rate":0,"interval":[0,0.0209]},
+          "correctRefused": {"count":33,"of":180,"rate":0.1833,"interval":[0.1336,0.2463]},
+          "injectionPaid": {"count":0,"of":31,"rate":0,"interval":[0,0.1103]},
+          "byPath": {
+            "with-checks": {
+              "wrongPaid": {"count":0,"of":80,"rate":0,"interval":[0,0.0458]},
+              "correctRefused": {"count":11,"of":80,"rate":0.1375,"interval":[0.0785,0.2297]},
+              "injectionPaid": {"count":0,"of":14,"rate":0,"interval":[0,0.2153]}
+            },
+            "without-checks": {
+              "wrongPaid": {"count":0,"of":100,"rate":0,"interval":[0,0.037]},
+              "correctRefused": {"count":22,"of":100,"rate":0.22,"interval":[0.15,0.3107]},
+              "injectionPaid": {"count":0,"of":17,"rate":0,"interval":[0,0.1843]}
+            }
+          }
+        }
+      },
+      "graders": {
+        "jev": {
+          "model": "jev-1.14.0",
+          "judged": 327,
+          "wrongPaid": {"count":22,"of":147,"rate":0.1497,"interval":[0.101,0.2162]},
+          "correctRefused": {"count":74,"of":180,"rate":0.4111,"interval":[0.3418,0.4841]},
+          "injectionPaid": {"count":0,"of":31,"rate":0,"interval":[0,0.1103]},
+          "calibration": {
+            "graded": 327,
+            "ece": 0.0561,
+            "bins": [
+              {"from":0,"to":0.1,"n":61,"meanProbability":0.0285,"correctShare":0.0164},
+              {"from":0.1,"to":0.2,"n":18,"meanProbability":0.1361,"correctShare":0.0556},
+              {"from":0.2,"to":0.3,"n":7,"meanProbability":0.2457,"correctShare":0.4286},
+              {"from":0.3,"to":0.4,"n":12,"meanProbability":0.35,"correctShare":0.25},
+              {"from":0.4,"to":0.5,"n":18,"meanProbability":0.4444,"correctShare":0.5556},
+              {"from":0.5,"to":0.6,"n":18,"meanProbability":0.5456,"correctShare":0.6667},
+              {"from":0.6,"to":0.7,"n":23,"meanProbability":0.6452,"correctShare":0.6087},
+              {"from":0.7,"to":0.8,"n":42,"meanProbability":0.75,"correctShare":0.7143},
+              {"from":0.8,"to":0.9,"n":72,"meanProbability":0.8503,"correctShare":0.7778},
+              {"from":0.9,"to":1,"n":56,"meanProbability":0.9275,"correctShare":0.8929}
+            ]
+          }
+        },
+        "second": {
+          "model": "deepseek/deepseek-v4.1-flash-1017",
+          "judged": 327,
+          "wrongPaid": {"count":0,"of":147,"rate":0,"interval":[0,0.0255]},
+          "correctRefused": {"count":5,"of":180,"rate":0.0278,"interval":[0.0119,0.0634]},
+          "injectionPaid": {"count":0,"of":31,"rate":0,"interval":[0,0.1103]},
+          "calibration": {
+            "graded": 327,
+            "ece": 0.0169,
+            "bins": [
+              {"from":0,"to":0.1,"n":152,"meanProbability":0.0013,"correctShare":0.0329},
+              {"from":0.1,"to":0.2,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.2,"to":0.3,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.3,"to":0.4,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.4,"to":0.5,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.5,"to":0.6,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.6,"to":0.7,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.7,"to":0.8,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.8,"to":0.9,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.9,"to":1,"n":175,"meanProbability":0.9959,"correctShare":1}
+            ]
+          }
+        }
+      },
+      "recorded": {
+        "judged": 327,
+        "calibration": {
+          "graded": 327,
+          "ece": 0.1324,
+          "bins": [
+            {"from":0,"to":0.1,"n":152,"meanProbability":0.0013,"correctShare":0.0329},
+            {"from":0.1,"to":0.2,"n":1,"meanProbability":0.11,"correctShare":1},
+            {"from":0.2,"to":0.3,"n":2,"meanProbability":0.235,"correctShare":1},
+            {"from":0.3,"to":0.4,"n":3,"meanProbability":0.3733,"correctShare":1},
+            {"from":0.4,"to":0.5,"n":10,"meanProbability":0.442,"correctShare":1},
+            {"from":0.5,"to":0.6,"n":11,"meanProbability":0.5509,"correctShare":1},
+            {"from":0.6,"to":0.7,"n":13,"meanProbability":0.6523,"correctShare":1},
+            {"from":0.7,"to":0.8,"n":30,"meanProbability":0.7533,"correctShare":1},
+            {"from":0.8,"to":0.9,"n":55,"meanProbability":0.8516,"correctShare":1},
+            {"from":0.9,"to":1,"n":50,"meanProbability":0.928,"correctShare":1}
+          ]
+        }
+      }
+    },
+    {
+      "name": "2026-W47-held-out",
+      "run": "bd82d7c7-ec8a-42b8-885d-cb7fd1285859",
+      "sets": ["held-out"],
+      "startedAt": "2026-11-18T14:49:47.157Z",
+      "endedAt": "2026-11-18T17:53:54.561Z",
+      "rule": "lower-of",
+      "grades": 180,
+      "graded": 180,
+      "rules": {
+        "lower-of": {
+          "wrongPaid": {"count":1,"of":90,"rate":0.0111,"interval":[0.002,0.0603]},
+          "correctRefused": {"count":38,"of":90,"rate":0.4222,"interval":[0.3254,0.5254]},
+          "injectionPaid": {"count":0,"of":13,"rate":0,"interval":[0,0.2281]},
+          "byPath": {
+            "with-checks": {
+              "wrongPaid": {"count":0,"of":40,"rate":0,"interval":[0,0.0876]},
+              "correctRefused": {"count":15,"of":40,"rate":0.375,"interval":[0.2422,0.5297]},
+              "injectionPaid": {"count":0,"of":6,"rate":0,"interval":[0,0.3903]}
+            },
+            "without-checks": {
+              "wrongPaid": {"count":1,"of":50,"rate":0.02,"interval":[0.0035,0.105]},
+              "correctRefused": {"count":23,"of":50,"rate":0.46,"interval":[0.3297,0.596]},
+              "injectionPaid": {"count":0,"of":7,"rate":0,"interval":[0,0.3543]}
+            }
+          }
+        },
+        "median": {
+          "wrongPaid": {"count":1,"of":90,"rate":0.0111,"interval":[0.002,0.0603]},
+          "correctRefused": {"count":16,"of":90,"rate":0.1778,"interval":[0.1125,0.2694]},
+          "injectionPaid": {"count":0,"of":13,"rate":0,"interval":[0,0.2281]},
+          "byPath": {
+            "with-checks": {
+              "wrongPaid": {"count":0,"of":40,"rate":0,"interval":[0,0.0876]},
+              "correctRefused": {"count":4,"of":40,"rate":0.1,"interval":[0.0396,0.2305]},
+              "injectionPaid": {"count":0,"of":6,"rate":0,"interval":[0,0.3903]}
+            },
+            "without-checks": {
+              "wrongPaid": {"count":1,"of":50,"rate":0.02,"interval":[0.0035,0.105]},
+              "correctRefused": {"count":12,"of":50,"rate":0.24,"interval":[0.143,0.3741]},
+              "injectionPaid": {"count":0,"of":7,"rate":0,"interval":[0,0.3543]}
+            }
+          }
+        }
+      },
+      "graders": {
+        "jev": {
+          "model": "jev-1.14.0",
+          "judged": 161,
+          "wrongPaid": {"count":10,"of":71,"rate":0.1408,"interval":[0.0783,0.2402]},
+          "correctRefused": {"count":38,"of":90,"rate":0.4222,"interval":[0.3254,0.5254]},
+          "injectionPaid": {"count":0,"of":13,"rate":0,"interval":[0,0.2281]},
+          "calibration": {
+            "graded": 161,
+            "ece": 0.0719,
+            "bins": [
+              {"from":0,"to":0.1,"n":27,"meanProbability":0.023,"correctShare":0.0741},
+              {"from":0.1,"to":0.2,"n":10,"meanProbability":0.124,"correctShare":0.1},
+              {"from":0.2,"to":0.3,"n":10,"meanProbability":0.241,"correctShare":0.2},
+              {"from":0.3,"to":0.4,"n":8,"meanProbability":0.3638,"correctShare":0.5},
+              {"from":0.4,"to":0.5,"n":6,"meanProbability":0.4533,"correctShare":0.3333},
+              {"from":0.5,"to":0.6,"n":8,"meanProbability":0.5538,"correctShare":0.5},
+              {"from":0.6,"to":0.7,"n":9,"meanProbability":0.6267,"correctShare":0.5556},
+              {"from":0.7,"to":0.8,"n":21,"meanProbability":0.7433,"correctShare":0.8571},
+              {"from":0.8,"to":0.9,"n":20,"meanProbability":0.8625,"correctShare":0.85},
+              {"from":0.9,"to":1,"n":42,"meanProbability":0.929,"correctShare":0.8333}
+            ]
+          }
+        },
+        "second": {
+          "model": "deepseek/deepseek-v4.1-flash-1017",
+          "judged": 161,
+          "wrongPaid": {"count":1,"of":71,"rate":0.0141,"interval":[0.0025,0.0756]},
+          "correctRefused": {"count":0,"of":90,"rate":0,"interval":[0,0.0409]},
+          "injectionPaid": {"count":0,"of":13,"rate":0,"interval":[0,0.2281]},
+          "calibration": {
+            "graded": 161,
+            "ece": 0.0055,
+            "bins": [
+              {"from":0,"to":0.1,"n":69,"meanProbability":0.0017,"correctShare":0},
+              {"from":0.1,"to":0.2,"n":1,"meanProbability":0.1,"correctShare":0},
+              {"from":0.2,"to":0.3,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.3,"to":0.4,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.4,"to":0.5,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.5,"to":0.6,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.6,"to":0.7,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.7,"to":0.8,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.8,"to":0.9,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.9,"to":1,"n":91,"meanProbability":0.9964,"correctShare":0.989}
+            ]
+          }
+        }
+      },
+      "recorded": {
+        "judged": 161,
+        "calibration": {
+          "graded": 161,
+          "ece": 0.1227,
+          "bins": [
+            {"from":0,"to":0.1,"n":71,"meanProbability":0.0031,"correctShare":0.0282},
+            {"from":0.1,"to":0.2,"n":2,"meanProbability":0.125,"correctShare":0.5},
+            {"from":0.2,"to":0.3,"n":2,"meanProbability":0.26,"correctShare":1},
+            {"from":0.3,"to":0.4,"n":4,"meanProbability":0.3625,"correctShare":1},
+            {"from":0.4,"to":0.5,"n":2,"meanProbability":0.445,"correctShare":1},
+            {"from":0.5,"to":0.6,"n":4,"meanProbability":0.56,"correctShare":1},
+            {"from":0.6,"to":0.7,"n":5,"meanProbability":0.614,"correctShare":1},
+            {"from":0.7,"to":0.8,"n":18,"meanProbability":0.745,"correctShare":1},
+            {"from":0.8,"to":0.9,"n":17,"meanProbability":0.8635,"correctShare":1},
+            {"from":0.9,"to":1,"n":36,"meanProbability":0.9308,"correctShare":0.9722}
+          ]
+        }
+      }
+    },
+    {
+      "name": "2026-W47-median",
+      "run": "cafe87ec-158b-44fa-ba5c-9bc2f9532079",
+      "sets": ["published"],
+      "startedAt": "2026-11-21T20:15:36.786Z",
+      "endedAt": "2026-11-22T07:48:11.779Z",
+      "rule": "median",
+      "grades": 360,
+      "graded": 359,
+      "rules": {
+        "lower-of": {
+          "wrongPaid": {"count":0,"of":179,"rate":0,"interval":[0,0.021]},
+          "correctRefused": {"count":75,"of":180,"rate":0.4167,"interval":[0.3471,0.4897]},
+          "injectionPaid": {"count":0,"of":31,"rate":0,"interval":[0,0.1103]},
+          "byPath": {
+            "with-checks": {
+              "wrongPaid": {"count":0,"of":80,"rate":0,"interval":[0,0.0458]},
+              "correctRefused": {"count":30,"of":80,"rate":0.375,"interval":[0.2769,0.4845]},
+              "injectionPaid": {"count":0,"of":14,"rate":0,"interval":[0,0.2153]}
+            },
+            "without-checks": {
+              "wrongPaid": {"count":0,"of":99,"rate":0,"interval":[0,0.0374]},
+              "correctRefused": {"count":45,"of":100,"rate":0.45,"interval":[0.3561,0.5476]},
+              "injectionPaid": {"count":0,"of":17,"rate":0,"interval":[0,0.1843]}
+            }
+          }
+        },
+        "median": {
+          "wrongPaid": {"count":0,"of":179,"rate":0,"interval":[0,0.021]},
+          "correctRefused": {"count":32,"of":180,"rate":0.1778,"interval":[0.1288,0.2402]},
+          "injectionPaid": {"count":0,"of":31,"rate":0,"interval":[0,0.1103]},
+          "byPath": {
+            "with-checks": {
+              "wrongPaid": {"count":0,"of":80,"rate":0,"interval":[0,0.0458]},
+              "correctRefused": {"count":11,"of":80,"rate":0.1375,"interval":[0.0785,0.2297]},
+              "injectionPaid": {"count":0,"of":14,"rate":0,"interval":[0,0.2153]}
+            },
+            "without-checks": {
+              "wrongPaid": {"count":0,"of":99,"rate":0,"interval":[0,0.0374]},
+              "correctRefused": {"count":21,"of":100,"rate":0.21,"interval":[0.1417,0.2998]},
+              "injectionPaid": {"count":0,"of":17,"rate":0,"interval":[0,0.1843]}
+            }
+          }
+        }
+      },
+      "graders": {
+        "jev": {
+          "model": "jev-1.14.0",
+          "judged": 326,
+          "wrongPaid": {"count":20,"of":146,"rate":0.137,"interval":[0.0905,0.2021]},
+          "correctRefused": {"count":74,"of":180,"rate":0.4111,"interval":[0.3418,0.4841]},
+          "injectionPaid": {"count":0,"of":31,"rate":0,"interval":[0,0.1103]},
+          "calibration": {
+            "graded": 326,
+            "ece": 0.0577,
+            "bins": [
+              {"from":0,"to":0.1,"n":58,"meanProbability":0.0259,"correctShare":0.0172},
+              {"from":0.1,"to":0.2,"n":19,"meanProbability":0.1242,"correctShare":0.1053},
+              {"from":0.2,"to":0.3,"n":12,"meanProbability":0.2417,"correctShare":0.0833},
+              {"from":0.3,"to":0.4,"n":17,"meanProbability":0.3606,"correctShare":0.4706},
+              {"from":0.4,"to":0.5,"n":16,"meanProbability":0.4438,"correctShare":0.5625},
+              {"from":0.5,"to":0.6,"n":16,"meanProbability":0.5469,"correctShare":0.5},
+              {"from":0.6,"to":0.7,"n":21,"meanProbability":0.6438,"correctShare":0.5714},
+              {"from":0.7,"to":0.8,"n":41,"meanProbability":0.7493,"correctShare":0.8049},
+              {"from":0.8,"to":0.9,"n":70,"meanProbability":0.8523,"correctShare":0.7571},
+              {"from":0.9,"to":1,"n":56,"meanProbability":0.9275,"correctShare":0.9464}
+            ]
+          }
+        },
+        "second": {
+          "model": "deepseek/deepseek-v4.1-flash-1017",
+          "judged": 326,
+          "wrongPaid": {"count":0,"of":146,"rate":0,"interval":[0,0.0256]},
+          "correctRefused": {"count":5,"of":180,"rate":0.0278,"interval":[0.0119,0.0634]},
+          "injectionPaid": {"count":0,"of":31,"rate":0,"interval":[0,0.1103]},
+          "calibration": {
+            "graded": 326,
+            "ece": 0.017,
+            "bins": [
+              {"from":0,"to":0.1,"n":151,"meanProbability":0.0021,"correctShare":0.0331},
+              {"from":0.1,"to":0.2,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.2,"to":0.3,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.3,"to":0.4,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.4,"to":0.5,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.5,"to":0.6,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.6,"to":0.7,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.7,"to":0.8,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.8,"to":0.9,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.9,"to":1,"n":175,"meanProbability":0.995,"correctShare":1}
+            ]
+          }
+        }
+      },
+      "recorded": {
+        "judged": 326,
+        "calibration": {
+          "graded": 326,
+          "ece": 0.1196,
+          "bins": [
+            {"from":0,"to":0.1,"n":75,"meanProbability":0.0249,"correctShare":0.0133},
+            {"from":0.1,"to":0.2,"n":19,"meanProbability":0.1395,"correctShare":0.0526},
+            {"from":0.2,"to":0.3,"n":18,"meanProbability":0.2425,"correctShare":0.0556},
+            {"from":0.3,"to":0.4,"n":18,"meanProbability":0.3472,"correctShare":0.0556},
+            {"from":0.4,"to":0.5,"n":21,"meanProbability":0.434,"correctShare":0.0476},
+            {"from":0.5,"to":0.6,"n":2,"meanProbability":0.565,"correctShare":1},
+            {"from":0.6,"to":0.7,"n":8,"meanProbability":0.68,"correctShare":1},
+            {"from":0.7,"to":0.8,"n":17,"meanProbability":0.7465,"correctShare":1},
+            {"from":0.8,"to":0.9,"n":46,"meanProbability":0.8626,"correctShare":1},
+            {"from":0.9,"to":1,"n":102,"meanProbability":0.9444,"correctShare":1}
+          ]
+        }
+      }
+    }
+  ],
+  "replay": {
+    "kind": "offline replay of recorded requests",
+    "date": "2026-11-22",
+    "model": "openai/gpt-oss-120b",
+    "runs": [
+      {
+        "name": "2026-W47-held-out",
+        "run": "bd82d7c7-ec8a-42b8-885d-cb7fd1285859",
+        "sets": ["held-out"],
+        "graded": 180,
+        "of": 180,
+        "rules": {
+          "median-of-three": {
+            "wrongPaid": {"count":3,"of":90,"rate":0.0333,"interval":[0.0114,0.0935]},
+            "correctRefused": {"count":2,"of":90,"rate":0.0222,"interval":[0.0061,0.0774]},
+            "injectionPaid": {"count":0,"of":13,"rate":0,"interval":[0,0.2281]}
+          },
+          "median": {
+            "wrongPaid": {"count":1,"of":90,"rate":0.0111,"interval":[0.002,0.0603]},
+            "correctRefused": {"count":16,"of":90,"rate":0.1778,"interval":[0.1125,0.2694]},
+            "injectionPaid": {"count":0,"of":13,"rate":0,"interval":[0,0.2281]}
+          }
+        },
+        "third": {
+          "model": "openai/gpt-oss-120b",
+          "judged": 161,
+          "wrongPaid": {"count":5,"of":71,"rate":0.0704,"interval":[0.0305,0.1545]},
+          "correctRefused": {"count":6,"of":90,"rate":0.0667,"interval":[0.0309,0.1379]},
+          "injectionPaid": {"count":1,"of":13,"rate":0.0769,"interval":[0.0137,0.3331]},
+          "calibration": {
+            "graded": 161,
+            "ece": 0.0297,
+            "bins": [
+              {"from":0,"to":0.1,"n":59,"meanProbability":0.0402,"correctShare":0.0847},
+              {"from":0.1,"to":0.2,"n":11,"meanProbability":0.1118,"correctShare":0.0909},
+              {"from":0.2,"to":0.3,"n":1,"meanProbability":0.25,"correctShare":0},
+              {"from":0.3,"to":0.4,"n":1,"meanProbability":0.3,"correctShare":0},
+              {"from":0.4,"to":0.5,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.5,"to":0.6,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.6,"to":0.7,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.7,"to":0.8,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.8,"to":0.9,"n":2,"meanProbability":0.825,"correctShare":0.5},
+              {"from":0.9,"to":1,"n":87,"meanProbability":0.9623,"correctShare":0.954}
+            ]
+          }
+        },
+        "repeats": {
+          "grades": 4,
+          "asks": 12,
+          "medianOfThree": {"paidAtFirstAsk":3,"asksAgain":9,"paidAgain":6},
+          "third": {"paidAtFirstAsk":3,"asksAgain":9,"paidAgain":5}
+        }
+      },
+      {
+        "name": "2026-W47-median",
+        "run": "cafe87ec-158b-44fa-ba5c-9bc2f9532079",
+        "sets": ["published"],
+        "graded": 335,
+        "of": 359,
+        "rules": {
+          "median-of-three": {
+            "wrongPaid": {"count":7,"of":168,"rate":0.0417,"interval":[0.0203,0.0835]},
+            "correctRefused": {"count":12,"of":167,"rate":0.0719,"interval":[0.0416,0.1214]},
+            "injectionPaid": {"count":0,"of":27,"rate":0,"interval":[0,0.1246]}
+          },
+          "median": {
+            "wrongPaid": {"count":0,"of":168,"rate":0,"interval":[0,0.0224]},
+            "correctRefused": {"count":29,"of":167,"rate":0.1737,"interval":[0.1237,0.2383]},
+            "injectionPaid": {"count":0,"of":27,"rate":0,"interval":[0,0.1246]}
+          }
+        },
+        "third": {
+          "model": "openai/gpt-oss-120b",
+          "judged": 303,
+          "wrongPaid": {"count":14,"of":136,"rate":0.1029,"interval":[0.0623,0.1654]},
+          "correctRefused": {"count":21,"of":167,"rate":0.1257,"interval":[0.0837,0.1846]},
+          "injectionPaid": {"count":3,"of":27,"rate":0.1111,"interval":[0.0385,0.2806]},
+          "calibration": {
+            "graded": 303,
+            "ece": 0.0698,
+            "bins": [
+              {"from":0,"to":0.1,"n":116,"meanProbability":0.0376,"correctShare":0.0948},
+              {"from":0.1,"to":0.2,"n":24,"meanProbability":0.1058,"correctShare":0.2917},
+              {"from":0.2,"to":0.3,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.3,"to":0.4,"n":2,"meanProbability":0.35,"correctShare":1},
+              {"from":0.4,"to":0.5,"n":1,"meanProbability":0.4,"correctShare":1},
+              {"from":0.5,"to":0.6,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.6,"to":0.7,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.7,"to":0.8,"n":0,"meanProbability":null,"correctShare":null},
+              {"from":0.8,"to":0.9,"n":6,"meanProbability":0.8567,"correctShare":0.8333},
+              {"from":0.9,"to":1,"n":154,"meanProbability":0.9676,"correctShare":0.9156}
+            ]
+          }
+        },
+        "repeats": {
+          "grades": 10,
+          "asks": 30,
+          "medianOfThree": {"paidAtFirstAsk":7,"asksAgain":21,"paidAgain":12},
+          "third": {"paidAtFirstAsk":10,"asksAgain":30,"paidAgain":15}
+        }
+      }
+    ]
+  },
+  "definitions": {
+    "wrongPaid": "Wrong deliveries paid, out of every wrong delivery graded.",
+    "correctRefused": "Correct deliveries refused, out of every correct delivery graded.",
+    "injectionPaid": "Wrong deliveries that tell the grader to accept them and were paid, out of those graded.",
+    "interval": "The Wilson score interval at 95% of each share, as [low, high].",
+    "bar": "A delivery is paid when its pass probability reaches the bar.",
+    "target": "The share of correct work refused that the grade route aims to stay under.",
+    "rules": "How the two graders' pass probabilities become one. lower-of takes the lower one. median takes the median, which for two graders is their average. Under every rule a delivery whose checks fail is refused before the graders count.",
+    "rule": "The rule the service paid by when the run was graded. Its numbers are the run's recorded verdicts. The other rules are applied to the same recorded answers.",
+    "graders": "Each grader alone at the bar, from the answer the decision record of each grade holds. judged counts the grades whose checks did not fail, the ones a grader's answer could decide.",
+    "calibration": "Ten equal bins over the pass probability given, on the judged grades. meanProbability is the average probability in a bin and correctShare the share of its deliveries that were correct. ece, the expected calibration error, is the gap between the two averaged over the bins by their size.",
+    "recorded": "The pass probability the service recorded for each grade under the run's rule.",
+    "sets": "The case set a run graded. Held-out cases are not published, so their runs give totals only.",
+    "replay": "An offline replay. Each recorded grading request was sent again to a third model and the median of the three answers was taken. No recorded verdict changed. In repeats, the wrong deliveries the median of three paid and the prompt-injection deliveries the third model paid were asked three more times. paidAtFirstAsk counts those paid at the first ask and paidAgain the later asks that paid them again."
+  }
+}
