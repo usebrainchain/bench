@@ -1,4 +1,6 @@
 held-out/
-runs/
+runs/*
+!runs/2026-W47.json
+!runs/2026-W47-median.json
 node_modules/
 .DS_Store
