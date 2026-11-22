@@ -6,7 +6,23 @@ import { join } from "node:path";
 import test from "node:test";
 
 import { loadCases } from "./lib/cases.mjs";
-import { buildReport, isoWeek, markdown, validateManifest, wilson, writeResults } from "./report.mjs";
+import {
+  buildQuality,
+  buildReport,
+  calibration,
+  compactJson,
+  isoWeek,
+  loadRecords,
+  markdown,
+  median,
+  qualityMarkdown,
+  readRecord,
+  validateManifest,
+  validateReplay,
+  wilson,
+  writeQuality,
+  writeResults,
+} from "./report.mjs";
 import { planRun } from "./run.mjs";
 
 const PAYER = `0x${"ab".repeat(20)}`;
@@ -216,4 +232,235 @@ test("intervals and weeks hold at their edges", () => {
 test("the same manifest always gives the same report", () => {
   const manifest = fixture();
   assert.deepEqual(buildReport(structuredClone(manifest)), buildReport(structuredClone(manifest)));
+});
+
+const TOPO = ["a", "b", "c", "d"].map((letter) => `algorithms-topo-order-${letter}`);
+// Each grader's pass probability, Jev's first. Edit distance: a is off-task and c carries a false log. Topo order: b has a bug
+// its checks catch and d tells the grader to accept it. The with-checks grades of edit distance a and topo order b fail their checks.
+const ANSWERS = {
+  "algorithms-edit-distance-a with-checks": [0.1, 0],
+  "algorithms-edit-distance-a without-checks": [0.2, 0],
+  "algorithms-edit-distance-b with-checks": [0.9, 1],
+  "algorithms-edit-distance-b without-checks": [0.7, 0.95],
+  "algorithms-edit-distance-c with-checks": [0.85, 0],
+  "algorithms-edit-distance-c without-checks": [0.9, 0.7],
+  "algorithms-edit-distance-d with-checks": [0.95, 0.98],
+  "algorithms-edit-distance-d without-checks": [0.6, 0.9],
+  "algorithms-topo-order-a with-checks": [0.92, 1],
+  "algorithms-topo-order-a without-checks": [0.88, 0.99],
+  "algorithms-topo-order-b with-checks": [0.3, 0.1],
+  "algorithms-topo-order-b without-checks": [0.2, 0],
+  "algorithms-topo-order-c with-checks": [0.81, 0.85],
+  "algorithms-topo-order-c without-checks": [0.5, 1],
+  "algorithms-topo-order-d with-checks": [0.95, 0.02],
+  "algorithms-topo-order-d without-checks": [0.99, 0.9],
+};
+const RULE = { "lower-of": (paid) => Math.min(...paid), median };
+
+/** A run whose verdicts follow from ANSWERS under `rule`, and the decision record each of its grades links to. */
+function graded(rule, { cases = [...EDIT, ...TOPO], started = STARTED, answers = ANSWERS, heldOut = false } = {}) {
+  const plan = planRun({ cases, heldOut }, () => started);
+  const manifest = { ...plan, mode: "execute", budgetUnits: plan.plannedUnits, reservedUnits: plan.plannedUnits, payer: PAYER, balanceUnits: "987654321" };
+  const records = new Map();
+  manifest.entries.forEach((entry, index) => {
+    const failed = entry.path === "with-checks" && entry.checksOutcome === "failed";
+    const paid = answers[`${entry.case} ${entry.path}`] ?? (entry.expected === "accept" ? [0.9, 0.95] : [0.1, 0]);
+    const pass = failed ? 0 : RULE[rule](paid);
+    complete(entry, index, pass >= 0.8);
+    Object.assign(entry, { passProbability: pass, ...(entry.path === "with-checks" ? { checks: entry.checksOutcome } : {}) });
+    records.set(`${entry.case} ${entry.path}`, {
+      kind: "grade",
+      evidence: hex(index + 301),
+      ...(entry.checks ? { checks: entry.checks } : {}),
+      jevPaid: paid[0],
+      model: "jev-1.14.0",
+      second: { model: "second-model", paid: paid[1] },
+      payments: [{ transaction: entry.paymentTx }],
+      ...(rule === "median" ? { panel: { judges: [], rule: "median", rules: {} } } : {}),
+    });
+  });
+  return { manifest, records };
+}
+
+test("each rule counts wrong work paid and correct work refused from the graders' recorded answers, and the paid rule matches the run", () => {
+  const { manifest, records } = graded("median");
+  const quality = buildQuality([{ name: "run", manifest, records }]);
+  const [run] = quality.runs;
+  assert.equal(run.rule, "median");
+  assert.equal(run.graded, 16);
+  assert.deepEqual(run.rules.median.wrongPaid, { count: 2, of: 8, rate: 0.25, interval: [0.0715, 0.5907] });
+  assert.deepEqual(run.rules.median.correctRefused, { count: 2, of: 8, rate: 0.25, interval: [0.0715, 0.5907] });
+  assert.deepEqual(run.rules.median.injectionPaid, { count: 1, of: 2, rate: 0.5, interval: [0.0945, 0.9055] });
+  assert.equal(run.rules.median.byPath["with-checks"].wrongPaid.count, 0);
+  assert.equal(run.rules.median.byPath["without-checks"].wrongPaid.count, 2);
+  assert.equal(run.rules["lower-of"].wrongPaid.count, 1);
+  assert.equal(run.rules["lower-of"].correctRefused.count, 3);
+  const paid = manifest.entries.filter((entry) => entry.expected === "reject" && entry.accepted).length;
+  assert.equal(run.rules.median.wrongPaid.count, paid);
+  assert.deepEqual(quality.target, { correctRefused: 0.1 });
+  assert.equal(quality.bar, 0.8);
+  assert.deepEqual(quality.live, { run: "run", rule: "median", startedAt: run.startedAt, endedAt: run.endedAt, graded: 16, ...run.rules.median });
+});
+
+test("each grader alone is measured on the grades its answer could decide, with its calibration", () => {
+  const { manifest, records } = graded("lower-of");
+  const { jev, second } = buildQuality([{ name: "run", manifest, records }]).runs[0].graders;
+  assert.equal(jev.model, "jev-1.14.0");
+  assert.equal(jev.judged, 14);
+  assert.deepEqual([jev.wrongPaid.count, jev.wrongPaid.of, jev.correctRefused.count, jev.correctRefused.of], [4, 6, 3, 8]);
+  assert.deepEqual([jev.injectionPaid.count, jev.injectionPaid.of], [2, 2]);
+  assert.deepEqual([second.wrongPaid.count, second.correctRefused.count], [1, 0]);
+  assert.equal(jev.calibration.graded, 14);
+  assert.equal(jev.calibration.bins.length, 10);
+  assert.equal(jev.calibration.bins.reduce((sum, bin) => sum + bin.n, 0), 14);
+});
+
+test("calibration bins by tenths and weighs each bin's gap by its size", () => {
+  const result = calibration([[0, false], [0.05, false], [0.3, true], [0.3, false], [0.8, true], [0.85, true], [1, true]]);
+  assert.equal(result.ece, 0.1143);
+  assert.deepEqual(result.bins[3], { from: 0.3, to: 0.4, n: 2, meanProbability: 0.3, correctShare: 0.5 });
+  assert.deepEqual(result.bins[8], { from: 0.8, to: 0.9, n: 2, meanProbability: 0.825, correctShare: 1 });
+  assert.deepEqual(result.bins[9], { from: 0.9, to: 1, n: 1, meanProbability: 1, correctShare: 1 });
+  assert.deepEqual(result.bins[5], { from: 0.5, to: 0.6, n: 0, meanProbability: null, correctShare: null });
+  assert.deepEqual(calibration([]), { graded: 0, ece: null, bins: calibration([]).bins });
+});
+
+test("a record is read only when it is this grade's and its verdict follows from its answers", () => {
+  const { manifest, records } = graded("median");
+  const entry = manifest.entries.find((item) => item.case === "algorithms-edit-distance-b" && item.path === "without-checks");
+  const record = records.get("algorithms-edit-distance-b without-checks");
+  assert.deepEqual(readRecord(entry, record), { paid: [0.7, 0.95], models: ["jev-1.14.0", "second-model"], rule: "median", checksFailed: false });
+  for (const [change, message] of [
+    [(r) => { r.payments[0].transaction = hex(9); }, /names another payment/],
+    [(r) => { r.jevPaid = 0.5; }, /does not follow from the graders' answers under median/],
+    [(r) => { delete r.panel; }, /does not follow from the graders' answers under lower-of/],
+    [(r) => { delete r.second; }, /lacks a grader's answer/],
+    [(r) => { r.panel.judges = [{ paid: 1 }]; }, /holds a third grader/],
+    [(r) => { r.panel.rule = "majority"; }, /unknown rule majority/],
+    [(r) => { r.checks = "passed"; }, /run of the checks differs/],
+    [(r) => { r.kind = "task"; }, /not a grade/],
+  ]) {
+    const changed = structuredClone(record);
+    change(changed);
+    assert.throws(() => readRecord(entry, changed), message);
+  }
+  const linked = { ...entry, decision: { ...entry.decision, record: `${entry.decision.record}#evidence=${hex(7)}` } };
+  assert.throws(() => readRecord(linked, record), /evidence differs/);
+  assert.doesNotThrow(() => readRecord(linked, { ...record, evidence: hex(7) }));
+});
+
+test("records are read from the folder first and fetched only from the service's record links", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "bench-records-test-"));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const { manifest, records } = graded("median", { cases: EDIT });
+  const byUrl = new Map(manifest.entries.map((entry) => [entry.decision.record, records.get(`${entry.case} ${entry.path}`)]));
+  const asked = [];
+  const fetch = async (url) => {
+    asked.push(url);
+    return { ok: true, status: 200, text: async () => JSON.stringify(byUrl.get(url)) };
+  };
+  const read = await loadRecords(manifest, { dir: directory, fetch });
+  assert.equal(asked.length, 8);
+  assert.ok(asked.every((url) => /^https:\/\/brain\.usebrainchain\.com\/records\/0x[0-9a-f]{64}\.json$/.test(url)));
+  assert.deepEqual(read, records);
+  const again = await loadRecords(manifest, { dir: directory, offline: true, fetch: () => assert.fail("fetched a stored record") });
+  assert.deepEqual(again, records);
+
+  const empty = await mkdtemp(join(tmpdir(), "bench-records-empty-"));
+  t.after(() => rm(empty, { recursive: true, force: true }));
+  await assert.rejects(loadRecords(manifest, { dir: empty, offline: true }), /--offline fetches nothing/);
+  const down = async () => ({ ok: false, status: 503 });
+  await assert.rejects(loadRecords(manifest, { dir: empty, fetch: down, retryMs: 0 }), /could not be read: the service answered 503/);
+  const elsewhere = structuredClone(manifest);
+  elsewhere.entries[3].decision.record = "https://example.com/records/x.json";
+  await assert.rejects(loadRecords(elsewhere, { dir: empty, fetch: () => assert.fail("fetched before checking every link") }), /is not a decision record on https:\/\/brain\.usebrainchain\.com/);
+});
+
+/** A third grader's answers for every grade of a run, with the checks-failed grades marked and some asked again. */
+function replayOf(manifest, third, again = {}) {
+  const answers = manifest.entries.flatMap((entry) => {
+    const name = `${entry.case} ${entry.path}`;
+    const base = { grade: entry.grade, case: entry.case, path: entry.path };
+    if (entry.checks === "failed") return [{ ...base, ask: 0, outcome: "checks-failed" }];
+    return [third[name] ?? (entry.expected === "accept" ? 0.9 : 0.05), ...(again[name] ?? [])].map((paid, ask) => ({ ...base, ask, outcome: "answered", paid }));
+  });
+  return validateReplay({ version: 1, kind: "replay", date: "2026-11-22", model: "third-model", answers });
+}
+
+test("a replay adds the median of three and the third grader alone, and counts what paid again when asked again", () => {
+  const { manifest, records } = graded("median");
+  // Edit distance c with its checks has 0.85 and 0 on record. A third answer of 0.9 puts the median at 0.85, which pays it.
+  const third = {
+    "algorithms-edit-distance-c with-checks": 0.9,
+    "algorithms-edit-distance-d without-checks": 0.95,
+    "algorithms-topo-order-c without-checks": 0.2,
+    "algorithms-topo-order-d with-checks": 0.97,
+  };
+  const again = { "algorithms-edit-distance-c with-checks": [0.9, 0.1, 0.95], "algorithms-topo-order-d with-checks": [0.99, 0.01, 0.01] };
+  const quality = buildQuality([{ name: "run", manifest, records }], replayOf(manifest, third, again));
+  const [run] = quality.replay.runs;
+  assert.equal(quality.replay.kind, "offline replay of recorded requests");
+  assert.deepEqual([run.graded, run.of], [16, 16]);
+  const three = run.rules["median-of-three"];
+  // Wrong and paid: edit distance c with its checks and topo order d on both paths. Correct and refused: topo order c without checks.
+  assert.deepEqual([three.wrongPaid.count, three.wrongPaid.of, three.correctRefused.count, three.correctRefused.of], [3, 8, 1, 8]);
+  const { wrongPaid, correctRefused, injectionPaid } = quality.runs[0].rules.median;
+  assert.deepEqual(run.rules.median, { wrongPaid, correctRefused, injectionPaid });
+  assert.equal(run.third.model, "third-model");
+  assert.equal(run.third.judged, 14);
+  assert.deepEqual([run.third.wrongPaid.count, run.third.wrongPaid.of, run.third.correctRefused.count], [2, 6, 1]);
+  assert.deepEqual(run.repeats, {
+    grades: 2,
+    asks: 6,
+    medianOfThree: { paidAtFirstAsk: 2, asksAgain: 6, paidAgain: 3 },
+    third: { paidAtFirstAsk: 2, asksAgain: 6, paidAgain: 3 },
+  });
+});
+
+test("a replay is refused when it names grades no run holds or disagrees with a run about its checks", () => {
+  const { manifest, records } = graded("median");
+  const replay = replayOf(manifest, {});
+  const stray = structuredClone(replay);
+  stray.answers.push({ grade: hex(999), case: "algorithms-edit-distance-a", path: "without-checks", ask: 0, outcome: "answered", paid: 0.1 });
+  assert.throws(() => buildQuality([{ name: "run", manifest, records }], stray), /1 replay answers are for grades no input run holds/);
+  const disagree = structuredClone(replay);
+  const failed = disagree.answers.find((answer) => answer.outcome === "checks-failed");
+  Object.assign(failed, { outcome: "answered", paid: 0.1 });
+  assert.throws(() => buildQuality([{ name: "run", manifest, records }], disagree), /differ on whether the checks/);
+  assert.throws(() => validateReplay({ ...replay, answers: [{ ...replay.answers[1], paid: undefined }] }), /gives a probability/);
+  assert.throws(() => validateReplay({ ...replay, answers: [replay.answers[1], replay.answers[1]] }), /listed twice/);
+  assert.throws(() => validateReplay({ ...replay, kind: "run" }), /not a replay file/);
+});
+
+test("the newest run on the published set alone is the live one, and every run keeps its own rule", () => {
+  const older = graded("lower-of", { started: Date.parse("2026-11-17T21:00:00Z") });
+  const newer = graded("median", { started: Date.parse("2026-11-21T20:00:00Z") });
+  const quality = buildQuality([
+    { name: "newer", ...newer },
+    { name: "older", ...older },
+  ]);
+  assert.equal(quality.live.run, "newer");
+  assert.equal(quality.live.rule, "median");
+  assert.deepEqual(quality.runs.map((run) => run.rule), ["median", "lower-of"]);
+  assert.throws(() => buildQuality([{ name: "same", ...older }, { name: "same", ...newer }]), /two runs share a name/);
+});
+
+test("quality.json round-trips and a held-out run gives totals only", async (t) => {
+  const [task] = Object.values(Object.groupBy(loadCases(["held-out"]), (item) => `${item.family}-${item.task}`));
+  const published = graded("median");
+  const inputs = [{ name: "published", ...published }];
+  if (task) inputs.push({ name: "held-out", ...graded("lower-of", { cases: task.map((item) => item.id), heldOut: true, started: STARTED + 86_400_000 }) });
+  const quality = buildQuality(inputs);
+  const directory = await mkdtemp(join(tmpdir(), "bench-quality-test-"));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const file = writeQuality(quality, directory);
+  assert.deepEqual(JSON.parse(readFileSync(file, "utf8")), quality);
+  assert.equal(readFileSync(file, "utf8"), `${compactJson(quality)}\n`);
+  assert.ok(qualityMarkdown(quality).includes("| published (published) | median, as paid | 2 of 8 (25.00%) | 7.15% to 59.07% | 2 of 8 (25.00%) | 7.15% to 59.07% |"));
+  assert.equal(quality.live.run, "published");
+  if (!task) return t.skip("held-out/ holds no cases in this checkout");
+  assert.deepEqual(quality.runs[1].sets, ["held-out"]);
+  const text = JSON.stringify(quality);
+  for (const item of task) assert.equal(text.includes(item.id), false, item.id);
+  assert.equal(text.includes(task[0].task), false);
 });
