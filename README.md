@@ -1,12 +1,52 @@
-# brainchain-bench
+# BrainChain grading bench
 
-Measure how often BrainChain's judge accepts wrong work and rejects correct work.
+BrainChain's grade route decides whether delivered work gets paid. This bench measures how often that decision goes wrong: wrong work it would pay for, and correct work it would refuse.
 
-Each case pairs a brief with delivered work and an expected verdict, and an oracle decides that verdict without asking a model. An agent sends each case to the paid grade route and compares Jev's answer with the label. The share of wrong deliveries Jev accepts is its false acceptance rate, and the share of correct ones it rejects is its false rejection rate. Code cases are sent twice, once with the case's checks and once without them, so both paths are measured.
+It holds 200 labelled cases, every grading run made against them, and the report that turns those runs into the numbers below. A case's label comes from running code against the delivery. No model decides it.
 
-## Cases
+## Results
 
-The full set has 300 cases: 240 code cases in ten task families and 60 structured-data cases in five. This repository publishes 200 of them. The other third is held out (see [Held-out cases](#held-out-cases)).
+The grade route asks two graders how likely a delivery is to meet its brief: Jev (`jev-1.14.0`) and a second model (`deepseek/deepseek-v4.1-flash-1017`). A rule combines the two answers, and the route accepts the work when the result reaches 0.8. A delivery whose checks fail is refused whatever the graders say.
+
+The latest run was paid under the median rule, which the grade route uses now. With two graders the median is their average. The two earlier runs were paid under the lower of the two answers.
+
+| Run | Cases | Rule | Wrong work paid | Correct work refused |
+| --- | --- | --- | ---: | ---: |
+| 21 to 22 Nov 2026 | published | median | 0 of 179, 0.0% (0.0 to 2.1%) | 32 of 180, 17.8% (12.9 to 24.0%) |
+| 17 Nov 2026 | published | lower of the two | 0 of 180, 0.0% (0.0 to 2.1%) | 75 of 180, 41.7% (34.7 to 49.0%) |
+| 18 Nov 2026 | held out | lower of the two | 1 of 90, 1.1% (0.2 to 6.0%) | 38 of 90, 42.2% (32.5 to 52.5%) |
+
+Ranges are Wilson 95% intervals. The grade route aims to refuse less than 10% of correct work. The median rule refuses 17.8% on the published cases, and it paid for none of the 179 wrong deliveries. Applied to the answers recorded on 18 November, it refuses 16 of 90 correct held-out deliveries (17.8%) and pays the same one wrong delivery.
+
+The latest run graded 359 of its 360 requests. One request, for a wrong delivery, was never sent because the run's budget ran out.
+
+None of the 31 published deliveries that tell the grader to accept them was paid in any run, and none of the 13 held-out ones.
+
+### Each grader alone
+
+On the latest run's 326 grades whose checks did not fail, so that a grader's answer decides them:
+
+| Grader | Wrong work paid | Correct work refused | Calibration error |
+| --- | ---: | ---: | ---: |
+| `jev-1.14.0` | 20 of 146, 13.7% (9.0 to 20.2%) | 74 of 180, 41.1% (34.2 to 48.4%) | 0.058 |
+| `deepseek/deepseek-v4.1-flash-1017` | 0 of 146, 0.0% (0.0 to 2.6%) | 5 of 180, 2.8% (1.2 to 6.3%) | 0.017 |
+
+Calibration error is the expected calibration error over ten equal bins: how far, on average, the probability a grader gives sits from the share of those deliveries that were correct. The probability the grade route records for each grade, the median of the two, has a calibration error of 0.120 on the same grades. `results/quality.json` holds the bins.
+
+### Offline replay with a third grader
+
+On 22 November the recorded grading requests were sent again to a third model, `openai/gpt-oss-120b`, and the median of the three answers was taken. This was an offline replay of recorded requests. It changed no recorded verdict, and it is not how the grade route pays.
+
+| Cases | Grades replayed | Median of three: wrong paid | Correct refused | `gpt-oss-120b` alone: wrong paid | Correct refused |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| published | 335 of 359 | 7 of 168, 4.2% | 12 of 167, 7.2% | 14 of 136, 10.3% | 21 of 167, 12.6% |
+| held out | 180 of 180 | 3 of 90, 3.3% | 2 of 90, 2.2% | 5 of 71, 7.0% | 6 of 90, 6.7% |
+
+The replay covers the 335 grades the latest run had recorded when it ran. Each published wrong delivery the median of three paid was asked three more times, and it was paid again in 12 of those 21 asks.
+
+## How cases are labelled
+
+The full set has 300 cases: 240 code cases in ten task families and 60 structured-data cases in five. This repository publishes 200 of them. The other 100 are held out (see [Held-out cases](#held-out-cases)).
 
 | Family | Kind | Published tasks | Published | Held out |
 | --- | --- | --- | ---: | ---: |
@@ -40,7 +80,7 @@ Each task has four deliveries. Two are correct. The other two are wrong for a re
 
 Data deliveries can also be `wrong-value`, `wrong-type`, `missing-field`, `extra-field` or `invented-value` (a value for a field the source leaves out).
 
-## Layout
+A code oracle is a hidden test that runs after the delivered code, the way the service runs checks, and tries many more inputs than the checks do. An `edge-case` delivery passes its checks and fails its oracle, so a run shows whether the graders catch what weak checks miss. A data oracle parses the result as JSON and compares every field with `expected.json`, types included.
 
 ```
 cases/<family>/<task>/
@@ -52,25 +92,18 @@ cases/<family>/<task>/
   expected.json    the exact record the extraction must produce (data)
   schema.json      the JSON Schema an agent sends with the grade request (data)
   a.md ... d.md    the delivered results (a.txt ... d.txt for data)
+runs/              the published runs: every grade, its payment and the link to its decision record
+results/           the weekly report of each run, quality.json and the replay's answers
+environments/      the published cases packaged as an environment that grades a model as the judge
 ```
 
-The oracle runs after the delivered code, the way the service runs checks, and tests many more inputs than the checks do. An `edge-case` delivery passes its checks and fails its oracle, so a run shows whether Jev catches what weak checks miss. A data oracle parses the result as JSON and compares every field with `expected.json`, types included.
+### Paths
 
-## Method
+Code cases are graded twice. With checks, the request carries the case's checks, and BrainChain runs them against the delivered code in its sandbox before the graders answer. A run that fails refuses the work. A run that passes is evidence both graders read. Without checks, nothing runs and the graders judge the brief and the delivered text alone. Data cases are graded without checks. `run.mjs --path with-schema` also sends a data case's JSON Schema, which the grade route checks before the graders answer; the published runs do not include that path.
 
-The grade route is measured on three paths.
+Code requests use two levels, "Meets every requirement in the brief" and "Misses at least one requirement in the brief". Data requests use "Every field matches the source and the schema exactly" and "At least one field is missing, extra, of the wrong type or different from the source". Only the top level passes.
 
-- **With checks.** The request carries the case's checks. BrainChain appends them to the delivered code and runs the program in its sandbox before either model is asked. A run that fails rejects the work at full confidence. A run that passes is evidence both models read.
-- **Without checks.** The request carries no checks and its brief holds no checks block, so nothing runs. The models judge the brief and the delivered text alone.
-- **With a schema.** The request carries the case's JSON Schema in `schema`. BrainChain checks the result against it before either model is asked. A result that does not match rejects the work at full confidence. One that matches leaves the models to judge the values.
-
-Code cases go on the first two paths. Data cases carry no code and go on the last two. Each schema states the types, required fields and fixed lengths the brief already gives, so it catches a wrong type, a missing or extra field and a reply that is not JSON, and leaves a wrong or invented value to the models. A run takes the first two paths unless `--path with-schema` names the third, which the grade route serves from the release that checks a schema.
-
-Code requests use two levels, "Meets every requirement in the brief" and "Misses at least one requirement in the brief". Data requests use "Every field matches the source and the schema exactly" and "At least one field is missing, extra, of the wrong type or different from the source". `pass` is 0, so only the top level passes.
-
-The task path works differently. When an agent posts a task on BrainChain, the delivered code runs even when the brief has no checks, and the graders see that run. A grade without checks measures model grading alone; the task path measures model grading with an execution trace. This set measures the two grade route paths.
-
-## Check the labels
+### Check the labels
 
 Requires Node.js 22 or later and `python3`.
 
@@ -78,65 +111,53 @@ Requires Node.js 22 or later and `python3`.
 node check.mjs
 ```
 
-`check.mjs` runs every oracle and every set of checks against its delivery, and checks every data delivery against its schema the way the grade route does. A correct delivery must pass all of them, a wrong one must fail its oracle, and each run of the checks and each schema check must end the way `task.json` records. It also checks every request against the limits the grade route enforces. Each run is its own process with a 10 second limit, no network and no file writes (`sandbox-exec` on macOS, `unshare` on Linux). It runs only code from this repository and is no sandbox for submitted work.
+`check.mjs` runs every oracle and every set of checks against its delivery, and checks every data delivery against its schema the way the grade route does. A correct delivery must pass all of them, a wrong one must fail its oracle, and each run of the checks must end the way `task.json` records. Each run is its own process with a 10 second limit, no network and no file writes (`sandbox-exec` on macOS, `unshare` on Linux). It runs only code from this repository and is no sandbox for submitted work. `--family` narrows the check and `-v` prints the reason each oracle failed.
 
-`--family` narrows the check and `-v` prints each case with the reason its oracle failed.
+## Read the published runs
 
-## Plan a run
+`report.mjs` needs Node.js 22 or later and nothing else. It refuses a run whose requests or labels differ from the case files.
 
 ```sh
-node plan.mjs
-node plan.mjs --output runs/plan.json
+node report.mjs --input runs/2026-W47.json --out /tmp/bench-week
 ```
 
-`plan.mjs` builds the grade requests for one run and prints their count and cost at 0.25 USD a grade. It never signs or sends anything. One run of the published set is 360 grades: 90.00 USD at the public price of 0.25 USD a grade, or 3.60 USD plus the cost of the model calls at a partner price of 0.01 USD. `--set`, `--family`, `--path` and `--case` narrow the plan, and `--output` writes it to a new file. `runs/` is ignored by git.
+This rebuilds `results/2026-W47.json` and `results/2026-W47.md`, the weekly report of the 17 November run. It reads nothing over the network. For each path it counts false acceptances and false rejections with their Wilson intervals, by kind and by family, and links each case to its decision page. The JSON ends with the run's inscription record, which holds totals and no case.
+
+```sh
+node report.mjs --quality --input runs/2026-W47.json --input runs/2026-W47-median.json \
+  --replay results/replay/2026-11-22.json --out /tmp/bench-quality
+```
+
+This rebuilds the published part of `results/quality.json`. Every verdict links to its public decision record, which holds both graders' answers. The report fetches each record once from `https://brain.usebrainchain.com/records/` and keeps it in `runs/records/`. It refuses a record that names another payment, whose evidence hash differs from the link, or whose verdict does not follow from its answers under the run's rule. `--offline` fetches nothing. The held-out run and its share of the replay are in the committed file and cannot be rebuilt from this repository.
+
+### quality.json
+
+`results/quality.json` is the summary the quality page reads. Its `definitions` field explains every term.
+
+- `bar` and `target`: the 0.8 pass bar, and 0.1 for the share of correct work refused.
+- `live`: the latest run on the published cases under its own rule, with wrong work paid, correct work refused and prompt-injection deliveries paid, each as `{ count, of, rate, interval }`.
+- `runs`: per run, its dates, the rule it was paid by, both rules applied to its recorded answers (overall and per path), each grader alone with its calibration bins, and the calibration of the recorded probability.
+- `replay`: the third-grader replay per run, with the median of three, the third grader alone and the repeated asks.
 
 ## Run the set
 
-Install the x402 client once with `npm ci`. Then:
+A run pays for each grade. Install the x402 client with `npm ci`, then:
 
 ```sh
+node plan.mjs
 node run.mjs --dry
-BENCH_PAYER_KEY_FILE=path/to/bench.key node run.mjs --execute --budget-usd 3.60 --output runs/2026-W47.json
+BENCH_PAYER_KEY_FILE=path/to/bench.key node run.mjs --execute --budget-usd 3.60 --output runs/NAME.json
 ```
 
-`run.mjs` pays for each grade through `POST /x402/grades/for/bench`, the route BrainChain lists for this set's wallet at 0.01 a grade. A run of the published set is 360 grades for 3.60 USDG. `--held-out` adds the held-out cases, 540 grades for 5.40 USDG. `--pay-on base` pays in USDC on Base. `--path`, `--family` and `--case` narrow a run the way they narrow a plan. `--dry` prints the run and reads no key. Given `--budget-usd` and `--output`, it also says whether `--execute` would take them.
+`plan.mjs` builds the requests for a run and prints their count and cost. It signs and sends nothing. `run.mjs` pays 0.01 USDG a grade through `POST /x402/grades/for/bench`, the route BrainChain lists for this set's wallet; a run of the published set is 360 grades. `--pay-on base` pays in USDC on Base, and `--path`, `--family` and `--case` narrow a run.
 
-The runner pays by EIP-3009 on both chains. The wallet signs one transfer authorization per grade, for 0.01 to the desk's wallet, valid for the window the offer sets. That takes no approval transaction and leaves no allowance standing on the wallet. Paying through Permit2 would need a standing allowance, and the x402 client can sign a second permit when that allowance runs short.
-
-The runner keeps these rules:
-
-- It reads the route's offer before every payment. It stops unless the route exists and asks exactly 0.01 to the desk's wallet in the expected token, so a missing partner entry cannot charge the public price.
-- `--budget-usd` must cover the whole run. Each grade is reserved against it before it is signed.
-- It writes each payment to the manifest before it signs, and the grade id as soon as it has one. Every write reaches the disk first, so a crash leaves every payment on record.
-- It signs once per grade. It stops at a refused payment, at a grade whose outcome it cannot confirm, and at a grade with checks that comes back without a run of them, and at a grade with a schema that comes back without its check. A grade still being decided does not stop it. Three at once do.
-- `--resume` reads the grades a manifest paid for. It never signs.
-- `--continue` pays for the grades a stopped run never signed. It refuses while any grade may have been paid without a verdict. A person checks that payment and its grade, then records the outcome in the manifest.
-- It reads the key from the file `BENCH_PAYER_KEY_FILE` names, only once a payment is due, and only when no other user can read that file. The manifest holds no key and no signature.
-
-The manifest in `runs/` holds the plan, the budget, and for each grade its phase, grade id, payment transaction and verdict.
-
-The service answers a repeat of the same request from the same wallet with its first grade for 30 minutes. The runner stops on an answer for a grade it did not pay, so two runs of the same cases start at least half an hour apart.
-
-## Read a run
-
-```sh
-node report.mjs --input runs/2026-W47.json
-```
-
-`report.mjs` joins each verdict in the manifest with its case's label. It refuses a manifest whose requests or labels differ from the case files, and one with undecided grades unless `--partial` is given. It reads nothing over the network and sends nothing.
-
-For each path it counts false acceptances, the wrong deliveries Jev accepted out of all wrong ones, and false rejections, the correct deliveries it rejected out of all correct ones. Each count has its Wilson 95% interval, and the same counts follow by kind and by family. Each case links to its decision page and its grade. On the checks path it also shows how the service's run of the checks ended, beside the outcome `task.json` records.
-
-It writes `results/<week>.json` and `results/<week>.md`, named for the ISO week the run started, once per week. The JSON ends with the inscription record, `{ "brainchain": 1, "kind": "bench", ... }`. The record holds the week, the run, the commit, a hash of every request sent, and per path the counts and rates. It names no case and no wallet. The report builds the record and does not send it.
-
-A run with held-out cases counts them in the rates and adds a split by set. The case list names published cases only, so a held-out label stays unpublished.
+The runner signs one EIP-3009 transfer authorization per grade, so no allowance stays on the wallet. It reads the route's offer before every payment and stops unless the route asks exactly 0.01 to the expected wallet. `--budget-usd` must cover the whole run. Each payment is written to the manifest before it is signed, so a crash leaves every payment on record. `--resume` reads the grades a manifest paid for and never signs. `--continue` pays for the grades a stopped run never signed. The key is read from the file `BENCH_PAYER_KEY_FILE` names, only once a payment is due and only when no other user can read that file. The manifest holds no key and no signature. New runs written to `runs/` stay out of git.
 
 ## Held-out cases
 
-A third of each family's tasks stay out of this repository, in `held-out/`, which git ignores. `split.mjs` chose them at random from seed 617983144, recorded in `split.json`. A whole task is held out, so no brief, check or oracle of a held-out case is public.
+A third of each family's tasks are kept out of this repository, so graders can be tested on cases that have never been public. `split.mjs` chose them at random from seed 617983144, recorded in `split.json`. A whole task is held out, so no brief, check or oracle of a held-out case is here.
 
-Grading a held-out case publishes its brief and checks in the decision record, and its result once Jev accepts it. A held-out case stays unseen until its first run.
+All 100 held-out cases were graded on 18 November 2026. Grading a case publishes its brief and checks in its decision record, so those cases are spent and will be replaced by new ones before the next held-out run. Their files, labels and per-case results stay out of this repository. `results/quality.json` holds their totals only.
 
 ## Licence
 
