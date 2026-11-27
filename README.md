@@ -6,9 +6,11 @@ It holds 200 labelled cases, every grading run made against them, and the report
 
 ## Results
 
-The grade route asks two graders how likely a delivery is to meet its brief: Jev (`jev-1.14.0`) and a second model (`deepseek/deepseek-v4.1-flash-1017`). A rule combines the two answers, and the route accepts the work when the result reaches 0.8. A delivery whose checks fail is refused whatever the graders say.
+In the runs below, the grade route asked two graders how likely a delivery is to meet its brief: Jev (`jev-1.14.0`) and a second model (`deepseek/deepseek-v4.1-flash-1017`). A rule combined the two answers, and the route accepted the work when the result reached 0.8. A delivery whose checks fail is refused whatever the graders say.
 
-The latest run was paid under the median rule, which the grade route uses now. With two graders the median is their average. The two earlier runs were paid under the lower of the two answers.
+The latest run was paid under the median rule. With two graders the median is their average. The two earlier runs were paid under the lower of the two answers.
+
+Since 25 November 2026 the grade route decides by a weighted rule: 0.25 for Jev and 0.75 for the second model, with a third judge that carries no weight. The runs below predate it.
 
 | Run | Cases | Rule | Wrong work paid | Correct work refused |
 | --- | --- | --- | ---: | ---: |
